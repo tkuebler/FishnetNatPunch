@@ -14,6 +14,9 @@
 ## Getting started doing dev
 
 1. create a 'lib' directory in the root of this project
-2. cd into the directory
-3. git clone https://github.com/RevenantX/LiteNetLib.git
-
+1. cd into the directory
+1. git clone https://github.com/RevenantX/LiteNetLib.git
+1. Open up the root directory as a project in your favorite IDE
+1. Add your IDE's poop to .gitignore so the rest of us cant' see it.
+1. Add the LiteNetLib project to your build/path stuff so you can use it
+1. Profit.
