@@ -1,0 +1,17 @@
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.csproj.AssemblyReference.cache
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.GeneratedMSBuildEditorConfig.editorconfig
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.AssemblyInfoInputs.cache
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.AssemblyInfo.cs
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.csproj.CoreCompileInputs.cache
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/bin/Debug/net6.0/NATPunchServer
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/bin/Debug/net6.0/NATPunchServer.deps.json
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/bin/Debug/net6.0/NATPunchServer.runtimeconfig.json
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/bin/Debug/net6.0/NATPunchServer.dll
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/bin/Debug/net6.0/NATPunchServer.pdb
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/bin/Debug/net6.0/LiteNetLib.dll
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.csproj.CopyComplete
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.dll
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/refint/NATPunchServer.dll
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.pdb
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/NATPunchServer.genruntimeconfig.cache
+/Users/tkuebler/Unity/FN-NP/NATPunchServer/obj/Debug/net6.0/ref/NATPunchServer.dll

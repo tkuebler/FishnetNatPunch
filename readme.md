@@ -1,8 +1,10 @@
 # NAT Punchthrough for TugBoat / FishNet
 
+### Dependency
+https://github.com/RevenantX/LiteNetLib
 ### Proposed Approach
 
-1. Create a standalone NAT Punchthrough Server
+1. Create a standalone NAT Punchthrough Server based on LiteNetLib
 1. Create Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
