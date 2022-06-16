@@ -5,6 +5,7 @@ https://github.com/RevenantX/LiteNetLib
 ### Proposed Approach
 
 1. Create a standalone NAT Punchthrough Server based on LiteNetLib
+1. create a client for testing
 1. Create Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
