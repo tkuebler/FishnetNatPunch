@@ -1,5 +1,8 @@
-﻿using LiteNetLib;
+﻿using System;
+using System.Collections.Generic;
+using LiteNetLib;
 using System.Net;
+using System.Threading;
 
 // based on : https://github.com/RevenantX/LiteNetLib/blob/master/LibSample/HolePunchServerTest.cs
 
@@ -90,7 +93,8 @@ namespace FNNP
         static void Main(string[] args)
         {
 
-            Console.WriteLine("=== HolePunch Server v0.1 alpha ===");
+            Console.WriteLine("=== HolePunch Server v0.1 alpha localhost:"+ ServerPort + " ===");
+            
 
             EventBasedNetListener clientListener = new EventBasedNetListener();
 
