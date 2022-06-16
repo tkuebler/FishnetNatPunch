@@ -48,7 +48,7 @@ public class NATPunchClient
         
         _client.NatPunchModule.Init(natPunchListener);
         _client.Start();
-        _client.NatPunchModule.SendNatIntroduceRequest("localhost", ServerPort, "token1");
+        _client.NatPunchModule.SendNatIntroduceRequest("localhost", ServerPort, ConnectionKey);
 
         Console.WriteLine("Press ESC to quit");
 
