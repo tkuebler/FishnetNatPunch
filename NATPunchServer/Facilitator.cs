@@ -10,20 +10,56 @@ namespace FNNP
 {
     public class WaitPeer
     {
+        public static int ClientIdCounter = 0;
         public IPEndPoint InternalAddr { get; }
         public IPEndPoint ExternalAddr { get; }
+        public bool IsGameServer { get; }
+        public String GameToken { get; }
+        public int ClientId { get; }
         public DateTime RefreshTime { get; private set; }
 
         public void Refresh()
         {
             RefreshTime = DateTime.UtcNow;
         }
-
-        public WaitPeer(IPEndPoint internalAddr, IPEndPoint externalAddr)
+        public int NextClientId()
+        {
+            ++ClientIdCounter;
+            return ClientIdCounter;
+        }
+        public WaitPeer(IPEndPoint internalAddr, IPEndPoint externalAddr, bool isGameServer, String gameToken)
         {
             Refresh();
             InternalAddr = internalAddr;
             ExternalAddr = externalAddr;
+            IsGameServer = isGameServer;
+            GameToken = gameToken;
+            ClientId = NextClientId();
+        }
+    }
+    public struct TokenData
+    {
+        public bool isServer;
+        public string gameToken;
+        public TokenData(bool serv, string token)
+        {
+            isServer = serv;
+            gameToken = token;
+        }
+    }
+
+    // Lazy/quick way to not touch the LiteLibNet Punchthrough module but add some stuff to the request
+    public static class PunchUtils
+    {
+        public const string ConnectToken = "FNNP"; // TODO: unhard code this, so lazy...
+        public static TokenData SplitToken(string token)
+        {
+            string[] split = token.Split(":");
+            return new TokenData() {isServer = Boolean.Parse(split[0]), gameToken = split[1]};
+        }
+        public static string MakeToken(bool isServer, string gameToken)
+        {
+            return isServer.ToString() + ":" + gameToken;
         }
     }
 
@@ -36,10 +72,12 @@ namespace FNNP
         {
             _puncher = puncher;
         }
+
         void INatPunchListener.OnNatIntroductionRequest(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint,
             string token)
         {
-            if (_waitingPeers.TryGetValue(token, out var wpeer))
+            TokenData tokenData = PunchUtils.SplitToken(token);
+            if (_waitingPeers.TryGetValue(tokenData.gameToken, out var wpeer))
             {
                 if (wpeer.InternalAddr.Equals(localEndPoint) &&
                     wpeer.ExternalAddr.Equals(remoteEndPoint))
@@ -52,11 +90,13 @@ namespace FNNP
 
                 //found in list - introduce client and host to eachother
                 Console.WriteLine(
-                    "host - i({0}) e({1})\nclient - i({2}) e({3})",
+                    "{5}: client{4} - i({0}) e({1})\nclient{4} - i({2}) e({3})",
                     wpeer.InternalAddr,
                     wpeer.ExternalAddr,
                     localEndPoint,
-                    remoteEndPoint);
+                    remoteEndPoint,
+                    wpeer.IsGameServer,
+                    wpeer.GameToken);
 
                 _puncher.NatPunchModule.NatIntroduce(
                     wpeer.InternalAddr, // host internal
@@ -67,12 +107,23 @@ namespace FNNP
                 );
 
                 //Clear dictionary
-                _waitingPeers.Remove(token);
+                if (!wpeer.IsGameServer)
+                {
+                    Console.WriteLine("Removing client{0}:{1} from {5} isServer:{4}",
+                        wpeer.InternalAddr,
+                        wpeer.ExternalAddr,
+                        localEndPoint,
+                        remoteEndPoint,
+                        wpeer.IsGameServer,
+                        wpeer.GameToken);
+                    _waitingPeers.Remove(tokenData.gameToken);
+                }
             }
             else
             {
-                Console.WriteLine("Wait peer created. i({0}) e({1})", localEndPoint, remoteEndPoint);
-                _waitingPeers[token] = new WaitPeer(localEndPoint, remoteEndPoint);
+                WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer, tokenData.gameToken);
+                _waitingPeers[tokenData.gameToken] = _peer;
+                Console.WriteLine("Wait peer({2}) created. i({0}) e({1})", localEndPoint, remoteEndPoint, _peer.ClientId);
             }
         }
 
@@ -83,12 +134,11 @@ namespace FNNP
         }
     }
 
-    public class Program
+    public class Facilitator
     {
-        private const int ServerPort = 50010;
-        private const string ConnectionKey = "test_key";
+        private const int ServerPort = 61111;
         private readonly Dictionary<string, WaitPeer> _waitingPeers = new Dictionary<string, WaitPeer>();
-        private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 6);
+        private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 60);
 
         static void Main(string[] args)
         {
@@ -100,7 +150,7 @@ namespace FNNP
 
             clientListener.PeerConnectedEvent += peer => { Console.WriteLine("PeerConnected: " + peer.EndPoint); };
 
-            clientListener.ConnectionRequestEvent += request => { request.AcceptIfKey(ConnectionKey); };
+            clientListener.ConnectionRequestEvent += request => { request.AcceptIfKey(PunchUtils.ConnectToken); };
 
             clientListener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
             {

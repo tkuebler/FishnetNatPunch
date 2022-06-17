@@ -13,4 +13,8 @@
       <PackageReference Include="NUnit" Version="3.13.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\NATPunchServer\NATPunchServer.csproj" />
+    </ItemGroup>
+
 </Project>

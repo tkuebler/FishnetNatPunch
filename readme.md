@@ -2,7 +2,7 @@
 
 ### Dependency
 https://github.com/RevenantX/LiteNetLib
-### Proposed Approach
+## Proposed Approach
 
 1. Create a standalone NAT Punchthrough Server based on LiteNetLib
 1. create a client for testing
@@ -16,4 +16,16 @@ https://github.com/RevenantX/LiteNetLib
 
 ## Getting started doing dev
 
-1. TBD ( still working this out... ignore what was here before..
+1. The repo is organized as a Solution, with multiple projects.  It should import into any C# IDE without a problem.  
+1. Please .gitignore your IDE poop
+1. Run the server either in your IDE or via
+	1. ```cd NATPunchServer```
+	1. ```dotnet run NATPunchServer```
+1. Same for NATPunchClient 
+	- You must run at least two clients with the same token to see the punchthrough conversation happen
+
+	
+## Resources:
+- [https://github.com/RevenantX/LiteNetLib/blob/master/LibSample/HolePunchServerTest.cs](https://github.com/RevenantX/LiteNetLib/blob/master/LibSample/HolePunchServerTest.cs)
+- [https://anyconnect.com/stun-turn-ice/](https://anyconnect.com/stun-turn-ice/)
+- [https://mirror-networking.gitbook.io/docs/transports/litenetlib-transport](https://mirror-networking.gitbook.io/docs/transports/litenetlib-transport)
