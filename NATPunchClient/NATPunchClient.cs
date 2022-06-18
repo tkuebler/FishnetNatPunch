@@ -21,7 +21,7 @@ public class NATPunchClient
 {
     
     private const int DefaultServerPort = 61111; // 50010 or 61111 (raknet)
-    private const string DefaultServerAddr = "localhost"; // supposedly free server at natpunch.jenkinssoftware.com
+    private const string DefaultServerAddr = "voneggut.worldsalad.games"; // supposedly free server at natpunch.jenkinssoftware.com
     private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 6);
     
     static void Main(string[] args)
