@@ -4,8 +4,13 @@ using System.Net;
 
 namespace FNNP{
 
-    public static class SessionToken
+    public class SessionToken
     {
+        public readonly string Token;
+        public SessionToken()
+        {
+            Token = Generate();
+        }
         public static string Generate()
         {
             string gameToken = Guid.NewGuid().ToString().GetHashCode().ToString();
@@ -26,7 +31,7 @@ public class NATPunchClient
         int ServerPort = DefaultServerPort;
         string ServerAddr = DefaultServerAddr;
         int junk;
-        // ugly, but whatever
+        // ugly, but whatever, I'll make it pretty later
         Console.WriteLine("NATPunchClient <gameToken> <server|client> <serverPort> <serverAddress>");
         Console.WriteLine(args);
         if(args.Length > 0)
