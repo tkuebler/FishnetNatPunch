@@ -1,6 +1,7 @@
 libs/**
 lib/**
 .idea/**
+.idea.backup/**
 
 NATPunchServer/bin/**.*
 NATPunchServer/obj/**.*
