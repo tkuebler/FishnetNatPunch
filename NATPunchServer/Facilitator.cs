@@ -22,7 +22,7 @@ namespace FNNP
         {
             RefreshTime = DateTime.UtcNow;
         }
-        public int NextClientId()
+        public static int NextClientId()
         {
             ++ClientIdCounter;
             return ClientIdCounter;
@@ -37,6 +37,7 @@ namespace FNNP
             ClientId = NextClientId();
         }
     }
+
     public struct TokenData
     {
         public bool isServer;
@@ -55,7 +56,7 @@ namespace FNNP
         public static TokenData SplitToken(string token)
         {
             string[] split = token.Split(":");
-            return new TokenData() {isServer = Boolean.Parse(split[0]), gameToken = split[1]};
+            return new TokenData() { isServer = Boolean.Parse(split[0]), gameToken = split[1] };
         }
         public static string MakeToken(bool isServer, string gameToken)
         {
@@ -66,7 +67,8 @@ namespace FNNP
     public class PunchListener : INatPunchListener
     {
         private NetManager _puncher;
-        public readonly Dictionary<string, WaitPeer> _waitingPeers = new Dictionary<string, WaitPeer>();
+        public readonly Dictionary<string, List<WaitPeer>> _waitingPeers = new Dictionary<string, List<WaitPeer>>();
+        public readonly Dictionary<string, WaitPeer> _waitingServers = new Dictionary<string, WaitPeer>();
         public readonly List<string> _peersToRemove = new List<string>();
         public PunchListener(NetManager puncher)
         {
@@ -77,56 +79,122 @@ namespace FNNP
             string token)
         {
             TokenData tokenData = PunchUtils.SplitToken(token);
-            if (_waitingPeers.TryGetValue(tokenData.gameToken, out var wpeer))
+
+            if (tokenData.isServer)
             {
-                if (wpeer.InternalAddr.Equals(localEndPoint) &&
-                    wpeer.ExternalAddr.Equals(remoteEndPoint))
+                if (_waitingServers.ContainsKey(tokenData.gameToken))
                 {
-                    wpeer.Refresh();
-                    return;
+                    WaitPeer _server = _waitingServers[tokenData.gameToken];
+                    if (localEndPoint == _server.InternalAddr
+                        && remoteEndPoint == _server.ExternalAddr
+                        && tokenData.gameToken == _server.GameToken)
+                    {
+                        _server.Refresh();
+                    }
+                    else
+                    {
+                        Console.Write("ERROR: duplicate game key from different server ip, ignoring.");
+                        return;
+                    }
+                }
+                else
+                {
+                    WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
+                        tokenData.gameToken);
+                    _waitingServers[tokenData.gameToken] = _peer;
+                    Console.Write("Added waiting server{0}", _peer.ClientId);
                 }
 
-                Console.WriteLine("Wait peer found, sending introduction...");
-
-                //found in list - introduce client and host to eachother
-                Console.WriteLine(
-                    "{5}: client{4} - i({0}) e({1})\nclient{4} - i({2}) e({3})",
-                    wpeer.InternalAddr,
-                    wpeer.ExternalAddr,
-                    localEndPoint,
-                    remoteEndPoint,
-                    wpeer.IsGameServer,
-                    wpeer.GameToken);
-
-                _puncher.NatPunchModule.NatIntroduce(
-                    wpeer.InternalAddr, // host internal
-                    wpeer.ExternalAddr, // host external
-                    localEndPoint, // client internal
-                    remoteEndPoint, // client external
-                    token // request token
-                );
-
-                //Clear dictionary
-                if (!wpeer.IsGameServer)
+                // drain queue, your server has arrived
+                if (_waitingPeers.TryGetValue(tokenData.gameToken, out var gamePeers)) // check for waiting peers
                 {
-                    Console.WriteLine("Removing client{0}:{1} from {5} isServer:{4}",
-                        wpeer.InternalAddr,
-                        wpeer.ExternalAddr,
+
+                    foreach (var waitPeer in gamePeers) // processes waiting queue
+                    {
+                        if (waitPeer.InternalAddr.Equals(localEndPoint) &&
+                            waitPeer.ExternalAddr.Equals(remoteEndPoint) &&
+                            waitPeer.GameToken.Equals(tokenData.gameToken))
+                        {
+                            waitPeer.Refresh();
+                            return; // Repeat introduction request does a keep-alive
+                        }
+
+                        if (_waitingServers.ContainsKey(tokenData
+                                .gameToken)) // connect the server with the incoming request without queing
+                        {
+                            Console.WriteLine("Wait peer found, sending introduction...");
+                            //found in list - introduce client and host to eachother
+                            Console.WriteLine(
+                                "{5}: queued client{6} - i({0}) e({1})\n to server:  i({2}) e({3})",
+                                waitPeer.InternalAddr,
+                                waitPeer.ExternalAddr,
+                                _waitingServers[tokenData.gameToken].InternalAddr,
+                                _waitingServers[tokenData.gameToken].ExternalAddr,
+                                waitPeer.GameToken,
+                                waitPeer.ClientId);
+
+                            _puncher.NatPunchModule.NatIntroduce(
+                                waitPeer.InternalAddr, // waiting client
+                                waitPeer.ExternalAddr, // waiting client
+                                localEndPoint, // incoming client
+                                remoteEndPoint, // incoming client
+                                token // request token
+                            );
+
+
+                            //Clear dictionary of waiting client, because it's been introduced to the server
+                            Console.WriteLine("Removing client {6} from {5}",
+                                waitPeer.InternalAddr,
+                                waitPeer.ExternalAddr,
+                                localEndPoint,
+                                remoteEndPoint,
+                                waitPeer.IsGameServer,
+                                waitPeer.GameToken,
+                                waitPeer.ClientId);
+
+                            _waitingPeers.Remove(tokenData.gameToken);
+                        }
+                    }
+                }
+            }
+            else // is a client not a server/host
+            {
+                if (_waitingServers.ContainsKey(tokenData.gameToken))
+                {
+                    WaitPeer _server = _waitingServers[tokenData.gameToken];
+                    Console.WriteLine("There is a server waiting for incoming client request...");
+                    Console.WriteLine(
+                        "{4}: direct client{5} - i({0}) e({1})\n to server:  i({2}) e({3})",
                         localEndPoint,
                         remoteEndPoint,
-                        wpeer.IsGameServer,
-                        wpeer.GameToken);
-                    _waitingPeers.Remove(tokenData.gameToken);
+                        _waitingServers[tokenData.gameToken].InternalAddr,
+                        _waitingServers[tokenData.gameToken].ExternalAddr,
+                        tokenData.gameToken,
+                        WaitPeer.NextClientId());
+
+                    _puncher.NatPunchModule.NatIntroduce(
+                        _server.InternalAddr, // waiting server
+                        _server.ExternalAddr, // waiting server
+                        localEndPoint, // incoming client
+                        remoteEndPoint, // incoming client
+                        token // request token
+                    );
+                }
+                else // Create a waiting peer for this game token that has no host so when one appears it will get processed
+                {
+                    // create a blank wait list if this is a new game token
+                    if (!_waitingPeers.ContainsKey(tokenData.gameToken))
+                        _waitingPeers[tokenData.gameToken] = new List<WaitPeer>();
+
+                    WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
+                        tokenData.gameToken);
+                    _waitingPeers[tokenData.gameToken].Add(_peer);
+                    Console.WriteLine("Wait peer({2}) created. gameServer:{3} i({0}) e({1})", localEndPoint,
+                        remoteEndPoint, _peer.ClientId, _peer.IsGameServer);
+                    // we'll catch this the flip side?
                 }
             }
-            else
-            {
-                WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer, tokenData.gameToken);
-                _waitingPeers[tokenData.gameToken] = _peer;
-                Console.WriteLine("Wait peer({2}) created. i({0}) e({1})", localEndPoint, remoteEndPoint, _peer.ClientId);
-            }
         }
-
         void INatPunchListener.OnNatIntroductionSuccess(IPEndPoint targetEndPoint, NatAddressType type,
             string token)
         {
@@ -143,8 +211,8 @@ namespace FNNP
         static void Main(string[] args)
         {
 
-            Console.WriteLine("=== HolePunch Server v0.1 alpha localhost:"+ ServerPort + " ===");
-            
+            Console.WriteLine("=== HolePunch Server v0.1 alpha localhost:" + ServerPort + " ===");
+
 
             EventBasedNetListener clientListener = new EventBasedNetListener();
 
@@ -195,13 +263,17 @@ namespace FNNP
                 _puncher.NatPunchModule.PollEvents();
 
                 //check old peers
-                foreach (var waitPeer in punchListener._waitingPeers)
+                foreach (var waitingPeers in punchListener._waitingPeers)
                 {
-                    if (nowTime - waitPeer.Value.RefreshTime > KickTime)
+                    foreach (var waitPeer in waitingPeers.Value)
                     {
-                        punchListener._peersToRemove.Add(waitPeer.Key);
+                        if (nowTime - waitPeer.RefreshTime > KickTime)
+                        {
+                            punchListener._peersToRemove.Add(waitingPeers.Key);
+                        }
                     }
                 }
+
 
                 //remove
                 for (int i = 0; i < punchListener._peersToRemove.Count; i++)

@@ -28,14 +28,15 @@ public class NATPunchClient
         int junk;
         // ugly, but whatever
         Console.WriteLine("NATPunchClient <gameToken> <server|client> <serverPort> <serverAddress>");
+        Console.WriteLine(args);
         if(args.Length > 0)
         GameToken = args[0];
         if (args.Length > 1)
-            IsServer = args[0].Equals("server") ? true : false;
+            IsServer = args[1].Equals("server") ? true : false;
         if (args.Length > 2)
-            ServerPort = args != null && (int.TryParse(args[1], out junk)) ? junk : DefaultServerPort;
+            ServerPort = args != null && (int.TryParse(args[2], out junk)) ? junk : DefaultServerPort;
         if(args.Length > 3)
-            ServerAddr = (args[2] != null) ? args[2] : DefaultServerAddr;
+            ServerAddr = (args[3] != null) ? args[3] : DefaultServerAddr;
         
         EventBasedNetListener _clientListener = new EventBasedNetListener();
         
@@ -74,7 +75,7 @@ public class NATPunchClient
         _client.NatPunchModule.Init(natPunchListener);
         _client.Start();
         
-        _client.NatPunchModule.SendNatIntroduceRequest(ServerAddr, ServerPort, PunchUtils.MakeToken(false, GameToken));
+        _client.NatPunchModule.SendNatIntroduceRequest(ServerAddr, ServerPort, PunchUtils.MakeToken(IsServer, GameToken));
 
         Console.WriteLine("Press ESC to quit");
 
