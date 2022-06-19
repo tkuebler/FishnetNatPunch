@@ -1,6 +1,8 @@
 ﻿using System;
 using LiteNetLib;
 using System.Net;
+using System.Runtime.InteropServices;
+using LiteNetLib.Utils;
 
 namespace FNNP{
 
@@ -51,6 +53,12 @@ public class NATPunchClient
             Console.WriteLine("PeerConnected: " + peer.EndPoint);
         };
 
+        _clientListener.NetworkReceiveEvent += (peer, reader, channelNumber, deliveryMethod) =>
+        {
+            Console.WriteLine("We got: {0}", reader.GetString(100 /* max length of string */));
+            reader.Recycle();
+        };
+        
         _clientListener.ConnectionRequestEvent += request =>
         {
             request.AcceptIfKey(PunchUtils.ConnectToken);
@@ -75,8 +83,18 @@ public class NATPunchClient
         natPunchListener.NatIntroductionSuccess += (point, addrType, token) =>
         {
             var peer = _client.Connect(point, PunchUtils.ConnectToken);
-            Console.WriteLine($"NatIntroductionSuccess C1. Connecting to C2: {point}, type: {addrType}, connection created: {peer != null}");
+            Console.WriteLine($"NatIntroductionSuccess - Connecting to gameserver: {point}, type: {addrType}, connection created: {peer != null}");
             // TODO: Pass traffic to verify (ICE)
+            if (peer != null)
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put("Hello, can you hear me now?");
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+            else
+            {
+                //Console.WriteLine("failed to connect"); // note, this is a duplicate call, why does it call twice?
+            }
         };
         
         _client.NatPunchModule.Init(natPunchListener);

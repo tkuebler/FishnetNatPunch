@@ -11,13 +11,15 @@ https://github.com/RevenantX/LiteNetLib
 1. <del>Done: Create a standalone NAT Punchthrough Server based on LiteNetLib</del>
 1. <del>Done: Create a client for testing</del>
 1. <del>Done: Manually test multiple game servers and clients.</del>
+	- <del>multiple clients and session keys</del>
+	- pass traffic to test punchthrough
 1. Create Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
 	- validate traffic can pass
-1. Create a client library that aligns with the TugBoat transport
-1. Create a Unity project that uses this library
-1. embed this in TugBoat
+1. (investigating) Create a client library that aligns with the TugBoat transport
+1. (investigating) Create a Unity project that uses this library
+1. (investigation) embed this in TugBoat
 
 
 ## Getting started doing dev
@@ -33,7 +35,7 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 	1. *or run with defaults:* ```dotnet run NATPunchServer```
 
 - Run the client either in your idea or via command line
-	- you must run at least two clients with the same token, on in client mode the other in game server mode, to see the punchthrough conversation happen
+	- you must run at least two clients with the same token, one in client mode the other in game server mode, to see the punchthrough conversation happen
 	- command line 
 		- ```dotnet run NATPunchClient -- <gameToken> <server|client> <optional:serverPort> <optional:serverAddress>```
 		- defaults are in the code and may change, run without arguments for defaults
