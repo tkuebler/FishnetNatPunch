@@ -1,11 +1,16 @@
 # NAT Punchthrough for TugBoat / FishNet
 
+NAT punch server based on LiteNetLib for TugBoat/Fishnet use.  Example command line client included for experimentation and testing.
+
+Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the relay fallback.  Future plans are to create a relay server as well and add fallback.
+
 ### Dependency
 https://github.com/RevenantX/LiteNetLib
 ## Proposed Approach
 
 1. <del>Done: Create a standalone NAT Punchthrough Server based on LiteNetLib</del>
 1. <del>Done: Create a client for testing</del>
+1. <del>Done: Manually test multiple game servers and clients.</del>
 1. Create Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
@@ -40,7 +45,16 @@ You can set up multiple [VirtualBox](https://www.oracle.com/virtualization/virtu
 
 [Decent Guide to setting up NAT Networks using VirtualBox](https://www.techbeatly.com/how-to-create-and-use-natnetwork-in-virtualbox/)
 
-I use ubuntu linux server and the command line mode for the clients for testing.
+How I do it:
+
+- use ubuntu linux server and the command line mode for the clients for testing.
+- create n number of NAT Networks with different network ip blocks
+- create a base disk image with dotnet and base vm to clone
+- clone the base vm using linked n times.
+- assign a different NAT Network to each of the vms
+
+![VirtualBox clones](images/VirtualBox-clones.png)
+![VirtualBox networks](images/VirtualBox-networks.png)
 
 
 	
