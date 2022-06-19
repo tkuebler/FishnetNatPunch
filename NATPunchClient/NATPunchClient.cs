@@ -33,7 +33,6 @@ public class NATPunchClient
         int junk;
         // ugly, but whatever, I'll make it pretty later
         Console.WriteLine("NATPunchClient <gameToken> <server|client> <serverPort> <serverAddress>");
-        Console.WriteLine(args);
         if(args.Length > 0)
         GameToken = args[0];
         if (args.Length > 1)
@@ -43,6 +42,7 @@ public class NATPunchClient
         if(args.Length > 3)
             ServerAddr = (args[3] != null) ? args[3] : DefaultServerAddr;
         
+        Console.WriteLine("Client for game {3} (Gameserver:{0}) checking Facilitator: {1}:{2}",IsServer, ServerAddr, ServerPort, GameToken);
 
         EventBasedNetListener _clientListener = new EventBasedNetListener();
         
@@ -76,6 +76,7 @@ public class NATPunchClient
         {
             var peer = _client.Connect(point, PunchUtils.ConnectToken);
             Console.WriteLine($"NatIntroductionSuccess C1. Connecting to C2: {point}, type: {addrType}, connection created: {peer != null}");
+            // TODO: Pass traffic to verify
         };
         
         _client.NatPunchModule.Init(natPunchListener);
