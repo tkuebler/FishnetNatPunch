@@ -102,7 +102,7 @@ namespace FNNP
                     WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
                         tokenData.gameToken);
                     _waitingServers[tokenData.gameToken] = _peer;
-                    Console.Write("Added waiting server{0}", _peer.ClientId);
+                    Console.WriteLine("Added waiting server ({0})", _peer.ClientId);
                 }
 
                 // drain queue, your server has arrived
@@ -125,7 +125,7 @@ namespace FNNP
                             Console.WriteLine("Wait peer found, sending introduction...");
                             //found in list - introduce client and host to eachother
                             Console.WriteLine(
-                                "{5}: queued client{6} - i({0}) e({1})\n to server:  i({2}) e({3})",
+                                "{4}: queued client{5} - i({0}) e({1})\n to server:  i({2}) e({3})",
                                 waitPeer.InternalAddr,
                                 waitPeer.ExternalAddr,
                                 _waitingServers[tokenData.gameToken].InternalAddr,
@@ -189,7 +189,7 @@ namespace FNNP
                     WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
                         tokenData.gameToken);
                     _waitingPeers[tokenData.gameToken].Add(_peer);
-                    Console.WriteLine("Wait peer({2}) created. gameServer:{3} i({0}) e({1})", localEndPoint,
+                    Console.WriteLine("No server for " +tokenData.gameToken+ ". Wait peer({2}) created.  i({0}) e({1})", localEndPoint,
                         remoteEndPoint, _peer.ClientId, _peer.IsGameServer);
                     // we'll catch this the flip side?
                 }
