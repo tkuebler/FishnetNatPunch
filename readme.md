@@ -1,4 +1,4 @@
-# NAT Punchthrough for TugBoat / FishNet
+# LiteLibNet NAT Punchthrough for TugBoat / FishNet
 
 NAT punch server based on LiteNetLib for TugBoat/Fishnet use.  Example command line client included for experimentation and testing.
 
@@ -24,7 +24,7 @@ https://github.com/RevenantX/LiteNetLib
 
 The repo is organized as a Solution, with multiple projects.  It should import into any C# IDE without a problem.  
 
-- Please .gitignore your IDE poop
+- Please .gitignore your IDE poop if you plan on submitting a merge request
 - Build however you like building 
 	- ```dotnet build``` from the project root works just fine
 - Run the Facillitator either in your IDE or via command line
@@ -39,7 +39,10 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 		- defaults are in the code and may change, run without arguments for defaults
 		- The arguements are optionsl, but you must include the arguements in the stated order
 
-## Setting up a test environment using VirtualBox NAT Networks
+![Example output from server](images/Facillitator-example.png)
+![Example outut from client](images/Client-example.png)
+
+## Setting up a multiple NAT network test environment using VirtualBox 'NAT Networks'
 
 You can set up multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs, each using connection type of 'Nat Network', different NAT Networks for each VM and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind different NAT Networks to that facilitator.
 
@@ -47,11 +50,13 @@ You can set up multiple [VirtualBox](https://www.oracle.com/virtualization/virtu
 
 How I do it:
 
-- use ubuntu linux server and the command line mode for the clients for testing.
+- use [ubuntu linux server](https://ubuntu.com/download/server) and the command line mode for the clients for testing.
 - create n number of NAT Networks with different network ip blocks
-- create a base disk image with dotnet and base vm to clone
+- create a base disk image [with dotnet](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2204) and base vm to clone
+- clone the git project and compile
 - clone the base vm using linked n times.
 - assign a different NAT Network to each of the vms
+- run tests manually from command line on each of the vms as needed.
 
 ![VirtualBox clones](images/VirtualBox-clones.png)
 ![VirtualBox networks](images/VirtualBox-networks.png)
