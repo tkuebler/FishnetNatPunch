@@ -134,10 +134,10 @@ namespace FNNP
                                 waitPeer.ClientId);
 
                             _puncher.NatPunchModule.NatIntroduce(
-                                waitPeer.InternalAddr, // waiting client
-                                waitPeer.ExternalAddr, // waiting client
-                                localEndPoint, // incoming client
-                                remoteEndPoint, // incoming client
+                                _waitingServers[tokenData.gameToken].InternalAddr, // waiting game server
+                                _waitingServers[tokenData.gameToken].ExternalAddr, // waiting game server
+                                waitPeer.InternalAddr, // queued client
+                                waitPeer.ExternalAddr, // queued client
                                 token // request token
                             );
 
