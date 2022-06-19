@@ -75,7 +75,7 @@ public class NATPunchClient
         
         NetManager _client = new NetManager(_clientListener)
         {
-            IPv6Mode = IPv6Mode.DualMode,
+            //IPv6Mode = IPv6Mode.DualMode,
             NatPunchEnabled = true
         };
         
@@ -87,13 +87,10 @@ public class NATPunchClient
             // TODO: Pass traffic to verify (ICE)
             if (peer != null)
             {
+                Console.WriteLine("Sending hello message to {0}", peer.EndPoint.Address);
                 NetDataWriter writer = new NetDataWriter();
-                writer.Put("Hello, can you hear me now?");
+                writer.Put("Hello?");
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
-            else
-            {
-                //Console.WriteLine("failed to connect"); // note, this is a duplicate call, why does it call twice?
             }
         };
         

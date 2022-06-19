@@ -239,7 +239,7 @@ namespace FNNP
             };
             NetManager _puncher = new NetManager(clientListener)
             {
-                IPv6Mode = IPv6Mode.DualMode,
+                //IPv6Mode = IPv6Mode.DualMode,
                 NatPunchEnabled = true
             };
             ;
