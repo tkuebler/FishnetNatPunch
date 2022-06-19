@@ -204,14 +204,24 @@ namespace FNNP
 
     public class Facilitator
     {
-        private const int ServerPort = 61111;
         private readonly Dictionary<string, WaitPeer> _waitingPeers = new Dictionary<string, WaitPeer>();
         private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 60);
-
+        public const int DefaultServerPort = 61111;
+        public const string DefaultServerAddr = "localhost";
         static void Main(string[] args)
         {
-
-            Console.WriteLine("=== HolePunch Server v0.1 alpha localhost:" + ServerPort + " ===");
+            int ServerPort = DefaultServerPort;
+            string ServerAddr = DefaultServerAddr;
+            Console.WriteLine("NATPunchServer <serverPort> <serverAddress>");
+            Console.WriteLine(args);
+            int junk;
+            // ugly, but whatever, I'll make it pretty later
+            if (args.Length > 0)
+                ServerPort = args != null && (int.TryParse(args[0], out junk)) ? junk : DefaultServerPort;
+            if(args.Length > 1)
+                ServerAddr = (args[1] != null) ? args[1] : DefaultServerAddr;
+            
+            Console.WriteLine("=== HolePunch Server v0.1 alpha " + ServerAddr + ":" + ServerPort + " ===");
 
 
             EventBasedNetListener clientListener = new EventBasedNetListener();
