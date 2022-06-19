@@ -55,7 +55,7 @@ public class NATPunchClient
 
         _clientListener.NetworkReceiveEvent += (peer, reader, channelNumber, deliveryMethod) =>
         {
-            Console.WriteLine("We got: {0}", reader.GetString(100 /* max length of string */));
+            Console.WriteLine("We got: {0} from {1}", reader.GetString(100 /* max length of string */), peer.EndPoint.Address);
             reader.Recycle();
         };
         
