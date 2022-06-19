@@ -76,12 +76,12 @@ public class NATPunchClient
         {
             var peer = _client.Connect(point, PunchUtils.ConnectToken);
             Console.WriteLine($"NatIntroductionSuccess C1. Connecting to C2: {point}, type: {addrType}, connection created: {peer != null}");
-            // TODO: Pass traffic to verify
+            // TODO: Pass traffic to verify (ICE)
         };
         
         _client.NatPunchModule.Init(natPunchListener);
         _client.Start();
-        
+        Console.WriteLine("sending NatIntroductionRequest....");
         _client.NatPunchModule.SendNatIntroduceRequest(ServerAddr, ServerPort, PunchUtils.MakeToken(IsServer, GameToken));
 
         Console.WriteLine("Press ESC to quit");

@@ -24,14 +24,23 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 	- ```dotnet build``` from the project root works just fine
 - Run the Facillitator either in your IDE or via command line
 	1. ```cd NATPunchServer```
-	1. ```dotnet run NATPunchServer```
+	1. ```dotnet run NATPunchServer -- <serverPort> <serverAddress>```
+	1. *or run with defaults:* ```dotnet run NATPunchServer```
 
 - Run the client either in your idea or via command line
-	- you must run at least two clients with the same token to see the punchthrough conversation happen
+	- you must run at least two clients with the same token, on in client mode the other in game server mode, to see the punchthrough conversation happen
 	- command line 
-		- ```dotnet run NATPunchClient <gameToken> <server|client> <optional:serverPort> <optional:serverAddress>```
-		- defaults are in the code and may change
+		- ```dotnet run NATPunchClient -- <gameToken> <server|client> <optional:serverPort> <optional:serverAddress>```
+		- defaults are in the code and may change, run without arguments for defaults
+		- The arguements are optionsl, but you must include the arguements in the stated order
 
+## Setting up a test environment using VirtualBox NAT Networks
+
+You can set up multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs, each using connection type of 'Nat Network', different NAT Networks for each VM and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind different NAT Networks to that facilitator.
+
+[Decent Guide to setting up NAT Networks using VirtualBox](https://www.techbeatly.com/how-to-create-and-use-natnetwork-in-virtualbox/)
+
+I use ubuntu linux server and the command line mode for the clients for testing.
 
 
 	
