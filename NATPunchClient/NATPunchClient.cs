@@ -97,6 +97,10 @@ public class NATPunchClient
                 writer.Put("Hello?");
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
+            else
+            {
+                Console.WriteLine($"Error with Nat Introduction sucess peer. connected peers for this client: {_client.ConnectedPeerList.Count}");
+            }
         };
         _client.NatPunchModule.Init(natPunchListener);
         _client.Start();
