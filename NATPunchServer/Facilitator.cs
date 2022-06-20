@@ -82,7 +82,7 @@ namespace FNNP
 
             if (tokenData.isServer)
             {
-                if (_waitingServers.ContainsKey(tokenData.gameToken))
+                if (_waitingServers.ContainsKey(tokenData.gameToken)) // refresh if valid, ignore if not
                 {
                     WaitPeer _server = _waitingServers[tokenData.gameToken];
                     if (localEndPoint == _server.InternalAddr
@@ -97,12 +97,12 @@ namespace FNNP
                         return;
                     }
                 }
-                else
+                else // add to server list
                 {
                     WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
                         tokenData.gameToken);
                     _waitingServers[tokenData.gameToken] = _peer;
-                    Console.WriteLine("Added waiting server ({0})", _peer.ClientId);
+                    Console.WriteLine("Added waiting server ({0}) i {1} - o {2}", _peer.ClientId, _peer.InternalAddr, _peer.ExternalAddr );
                 }
 
                 // drain queue, your server has arrived
@@ -152,7 +152,7 @@ namespace FNNP
                                 waitPeer.GameToken,
                                 waitPeer.ClientId);
 
-                            _waitingPeers.Remove(tokenData.gameToken);
+                            gamePeers.Remove(waitPeer); // remove the thing we just introduced to the server
                         }
                     }
                 }
