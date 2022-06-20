@@ -83,12 +83,12 @@ public class NATPunchClient
         EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
         natPunchListener.NatIntroductionSuccess += (point, addrType, token) =>
         {
-            var peer = _client.Connect(point, PunchUtils.ConnectToken);
-            Console.WriteLine($"NatIntroductionSuccess - Connecting to game {PunchUtils.SplitToken(token).gameToken} isServer({PunchUtils.SplitToken(token).isServer}): {point.Address}:{point.Port}, type: {addrType}, connection created: {peer != null}");
+            var peer = _client.Connect(point, token);
+            Console.WriteLine($"NatIntroductionSuccess {addrType} - Connecting to game {PunchUtils.SplitToken(token).gameToken} isServer({PunchUtils.SplitToken(token).isServer}): {point.Address}:{point.Port}, type: {addrType}, connection created: {peer != null}");
             // TODO: Pass traffic to verify (ICE)
             if (peer != null)
             {
-                Console.WriteLine($"Sending hello message to {peer.EndPoint.Address}:{peer.EndPoint.Port}");
+                Console.WriteLine($"Sending hello message to {peer.EndPoint.Address}:{peer.EndPoint.Port}. {peer.ConnectionState} : {peer.Statistics.ToString()}");
                 NetDataWriter writer = new NetDataWriter();
                 writer.Put("Hello?");
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);

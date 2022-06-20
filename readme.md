@@ -17,6 +17,7 @@ https://github.com/RevenantX/LiteNetLib
 	- Test multiple clients
 	- Test multiple session keys
 	- validate traffic can pass
+1. Detect Symetrical NAT and warn - punt to relay directly
 1. (investigating) Create a client library that aligns with the TugBoat transport
 1. (investigating) Create a Unity project that uses this library
 1. (investigation) embed this in TugBoat
