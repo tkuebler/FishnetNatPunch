@@ -108,7 +108,7 @@ namespace FNNP
                 // drain queue, your server has arrived
                 if (_waitingPeers.TryGetValue(tokenData.gameToken, out var gamePeers)) // check for waiting peers
                 {
-
+                    List<WaitPeer> removePeers = new List<WaitPeer>();
                     foreach (var waitPeer in gamePeers) // processes waiting queue
                     {
                         if (waitPeer.InternalAddr.Equals(localEndPoint) &&
@@ -152,8 +152,14 @@ namespace FNNP
                                 waitPeer.GameToken,
                                 waitPeer.ClientId);
 
-                            gamePeers.Remove(waitPeer); // remove the thing we just introduced to the server
+                             // add to the remove list the thing we just introduced to the server
+                             removePeers.Add(waitPeer);
                         }
+                    }
+                    // remove list of peers to remove from queue
+                    foreach (var removePeer in removePeers)
+                    {
+                        _waitingPeers[removePeer.GameToken].Remove(removePeer);
                     }
                 }
             }
