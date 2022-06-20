@@ -156,7 +156,7 @@ namespace FNNP
                              removePeers.Add(waitPeer);
                         }
                     }
-                    // remove list of peers to remove from queue
+                    // remove list of peers to remove from queue TODO: use the proper existing data structure
                     foreach (var removePeer in removePeers)
                     {
                         _waitingPeers[removePeer.GameToken].Remove(removePeer);
@@ -173,8 +173,8 @@ namespace FNNP
                         "{4}: direct client{5} - i({0}) e({1})\n to server:  i({2}) e({3})",
                         localEndPoint,
                         remoteEndPoint,
-                        _waitingServers[tokenData.gameToken].InternalAddr,
-                        _waitingServers[tokenData.gameToken].ExternalAddr,
+                        _server.InternalAddr,
+                        _server.ExternalAddr,
                         tokenData.gameToken,
                         WaitPeer.NextClientId());
 
@@ -277,7 +277,7 @@ namespace FNNP
 
                 _puncher.NatPunchModule.PollEvents();
 
-                //check old peers
+                //check old peers TODO: add servers too
                 foreach (var waitingPeers in punchListener._waitingPeers)
                 {
                     foreach (var waitPeer in waitingPeers.Value)

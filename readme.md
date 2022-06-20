@@ -2,10 +2,10 @@
 
 NAT punch server based on LiteNetLib for TugBoat/Fishnet use.  Example command line client included for experimentation and testing.
 
-Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the relay fallback.  Future plans are to create a relay server as well and add fallback.
+Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the relay fallback.  Future plans are to [encorporate UPNP](https://github.com/lontivero/Open.NAT) and create a relay server as well and add fallback with a ICE moderator.
 
 ### Dependency
-https://github.com/RevenantX/LiteNetLib
+[https://github.com/RevenantX/LiteNetLib](https://github.com/RevenantX/LiteNetLib)
 ## Proposed Approach
 
 1. <del>Done: Create a standalone NAT Punchthrough Server based on LiteNetLib</del>
@@ -13,14 +13,15 @@ https://github.com/RevenantX/LiteNetLib
 1. <del>Done: Manually test multiple game servers and clients.</del>
 	- <del>multiple clients and session keys</del>
 	- pass traffic to test punchthrough
-1. Create Tests against the punchthrough server that:
+1. Create Automated Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
 	- validate traffic can pass
-1. Detect Symetrical NAT and warn - punt to relay directly
+1. Detect [Symetrical NAT](https://webrtchacks.com/symmetric-nat/) and [warn](https://www.aligrant.com/web/blog/2017-01-05_pfsense_nat_traversal_and_games) - punt to relay directly
 1. (investigating) Create a client library that aligns with the TugBoat transport
 1. (investigating) Create a Unity project that uses this library
 1. (investigation) embed this in TugBoat
+1. (investigation) upnp
 
 
 ## Getting started doing dev
@@ -47,7 +48,12 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 
 ## Setting up a multiple NAT network test environment using VirtualBox 'NAT Networks'
 
-You can set up multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs, each using connection type of 'Nat Network', different NAT Networks for each VM and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind different NAT Networks to that facilitator.
+>
+> :x: **Warning**
+> These instructions are already obsolete.  New instructions forthcoming.
+> 
+
+You can [set up](https://www.nakivo.com/blog/virtualbox-network-setting-guide/) multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs, each using connection type of 'Nat Network', different NAT Networks for each VM and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind different NAT Networks to that facilitator.
 
 [Decent Guide to setting up NAT Networks using VirtualBox](https://www.techbeatly.com/how-to-create-and-use-natnetwork-in-virtualbox/)
 
