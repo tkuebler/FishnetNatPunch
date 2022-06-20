@@ -96,6 +96,8 @@ public class NATPunchClient
                 NetDataWriter writer = new NetDataWriter();
                 writer.Put("Hello?");
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                writer.Put("Are we good?");
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
             else
             {
@@ -119,7 +121,7 @@ public class NATPunchClient
                     break;
                 }
 
-                if (key == ConsoleKey.A)
+                if (key == ConsoleKey.A) // TODO: instead of this capture keystrokes and send once punch has been made...
                 {
                     Console.WriteLine("Client stopped");
                     _client.DisconnectPeer(_client.FirstPeer, new byte[] { 1, 2, 3, 4 });

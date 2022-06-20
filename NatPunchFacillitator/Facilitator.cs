@@ -218,7 +218,7 @@ namespace FNNP
         {
             int ServerPort = DefaultServerPort;
             string ServerAddr = DefaultServerAddr;
-            Console.WriteLine("NATPunchServer <serverPort> <serverAddress>");
+            Console.WriteLine("NatPunchFacillitator <serverPort> <serverAddress>");
             int junk;
             // ugly, but whatever, I'll make it pretty later
             if (args.Length > 0)

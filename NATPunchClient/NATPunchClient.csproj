@@ -19,7 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
-      <ProjectReference Include="..\NATPunchServer\NATPunchServer.csproj" />
+      <ProjectReference Include="..\NatPunchFacillitator\NatPunchFacillitator.csproj" />
     </ItemGroup>
 
 </Project>

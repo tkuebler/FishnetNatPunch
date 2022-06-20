@@ -2,17 +2,19 @@
 
 NAT punch server based on LiteNetLib for TugBoat/Fishnet use.  Example command line client included for experimentation and testing.
 
-Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the relay fallback.  Future plans are to [encorporate UPNP](https://github.com/lontivero/Open.NAT) and create a relay server as well and add fallback with a ICE moderator.
+Clients identify as either a game host or a game client and present a token/key that identifies the game they want to join.  The Facillitator introduces them to the server for that game and visa versa and the library punches the holes for p2p.  This does not require either the game server or the game clients to be free of NAT or port forwarded.
+
+Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the TURN fallback for now.  Future plans are to [encorporate UPNP](https://github.com/lontivero/Open.NAT) and create a relay server for TURN as well and add fallback with a ICE moderator.
 
 ### Dependency
 [https://github.com/RevenantX/LiteNetLib](https://github.com/RevenantX/LiteNetLib)
 ## Proposed Approach
 
-1. <del>Done: Create a standalone NAT Punchthrough Server based on LiteNetLib</del>
+1. <del>Done: Create a standalone NAT Punchthrough Facillitator/Server based on LiteNetLib</del>
 1. <del>Done: Create a client for testing</del>
 1. <del>Done: Manually test multiple game servers and clients.</del>
 	- <del>multiple clients and session keys</del>
-	- pass traffic to test punchthrough
+	- <del>pass traffic to test punchthrough</del>
 1. Create Automated Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
@@ -26,15 +28,17 @@ Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but withou
 
 ## Getting started doing dev
 
-The repo is organized as a Solution, with multiple projects.  It should import into any C# IDE without a problem.  
+The repo is organized as a Solution, with multiple projects.  It should import into any C# IDE without a problem.  The LiteNetLib needs to be added as a source submodule due to differing platform compile flags (at least that is what the docs said).
 
+- After you have cloned the repo you will want to do the following commands in the root of the project to pull in the LiteNetLib.
+	- ```git fetch; git submodule init; git submodule update```
 - Please .gitignore your IDE poop if you plan on submitting a merge request
 - Build however you like building 
 	- ```dotnet build``` from the project root works just fine
 - Run the Facillitator either in your IDE or via command line
-	1. ```cd NATPunchServer```
-	1. ```dotnet run NATPunchServer -- <serverPort> <serverAddress>```
-	1. *or run with defaults:* ```dotnet run NATPunchServer```
+	1. ```cd NATPunchFacillitator```
+	1. ```dotnet run NATPunchFacillitator -- <serverPort> <serverAddress>```
+	1. *or run with defaults:* ```dotnet run```
 
 - Run the client either in your idea or via command line
 	- you must run at least two clients with the same token, one in client mode the other in game server mode, to see the punchthrough conversation happen
@@ -46,26 +50,25 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 ![Example output from server](images/Facillitator-example.png)
 ![Example outut from client](images/Client-example.png)
 
-## Setting up a multiple NAT network test environment using VirtualBox 'NAT Networks'
+## Setting up a multiple NAT network test environment using VirtualBox, Ubuntu Server and pfSense (router software).
 
->
-> :x: **Warning**
-> These instructions are already obsolete.  New instructions forthcoming.
-> 
 
 You can [set up](https://www.nakivo.com/blog/virtualbox-network-setting-guide/) multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs, each using connection type of 'Nat Network', different NAT Networks for each VM and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind different NAT Networks to that facilitator.
 
 [Decent Guide to setting up NAT Networks using VirtualBox](https://www.techbeatly.com/how-to-create-and-use-natnetwork-in-virtualbox/)
 
-How I do it:
+How I do it with VirtualBox (free):
 
 - use [ubuntu linux server](https://ubuntu.com/download/server) and the command line mode for the clients for testing.
-- create n number of NAT Networks with different network ip blocks
-- create a base disk image [with dotnet](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2204) and base vm to clone
-- clone the git project and compile
-- clone the base vm using linked n times.
-- assign a different NAT Network to each of the vms
-- run tests manually from command line on each of the vms as needed.
+	- create n number of Internal Networks with different network ip blocks
+	- create a base disk image [with dotnet](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2204) and base vm to clone
+	- clone the git project and compile
+	- clone the base vm using linked n times.
+	- assign a different Internal Network to each of the vms
+- Create n number of pfsense community edition (free) vms using the same 'create a base, then linked clones of it' technique.
+	- place the LAN interface of the pfsense on one of the private networks and the second WAN interface in bridged mode ( this will assign a independant ip address on your network, which is required for accurate testing.
+	- **Important** pfSense is a Symetrical NAT router by default, but it can be configured to not be. [Do so](https://www.aligrant.com/web/blog/2017-01-05_pfsense_nat_traversal_and_games), unless you are testing symetrical nat detection.
+	- run tests manually from command line on each of the vms as needed.
 
 ![VirtualBox clones](images/VirtualBox-clones.png)
 ![VirtualBox networks](images/VirtualBox-networks.png)

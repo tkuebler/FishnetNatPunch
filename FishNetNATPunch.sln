@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NATPunchServer", "NATPunchServer\NATPunchServer.csproj", "{4F6376C1-7C7D-45B8-9152-213DD91E96EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatPunchFacillitator", "NatPunchFacillitator\NatPunchFacillitator.csproj", "{4F6376C1-7C7D-45B8-9152-213DD91E96EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NATPunchClient", "NATPunchClient\NATPunchClient.csproj", "{FC285ADF-8FFD-4B6D-AC37-295C640C1F70}"
 EndProject
