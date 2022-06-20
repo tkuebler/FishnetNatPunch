@@ -276,6 +276,7 @@ namespace FNNP
                 DateTime nowTime = DateTime.UtcNow;
 
                 _puncher.NatPunchModule.PollEvents();
+                _puncher.PollEvents();
 
                 //check old peers TODO: add servers too
                 foreach (var waitingPeers in punchListener._waitingPeers)
