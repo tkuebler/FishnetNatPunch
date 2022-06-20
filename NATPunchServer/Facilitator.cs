@@ -233,7 +233,7 @@ namespace FNNP
 
             clientListener.PeerConnectedEvent += peer => { Console.WriteLine("PeerConnected: " + peer.EndPoint); };
 
-            clientListener.ConnectionRequestEvent += request => { request.AcceptIfKey(PunchUtils.ConnectToken); };
+            clientListener.ConnectionRequestEvent += request => { request.AcceptIfKey(PunchUtils.ConnectToken); Console.WriteLine($"Conrequest {request.RemoteEndPoint.ToString()}");};
 
             clientListener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
             {
@@ -245,7 +245,7 @@ namespace FNNP
             };
             NetManager _puncher = new NetManager(clientListener)
             {
-                IPv6Mode = IPv6Mode.DualMode,
+                //IPv6Mode = IPv6Mode.DualMode,
                 NatPunchEnabled = true
             };
             ;

@@ -80,14 +80,14 @@ public class NATPunchClient
         
         NetManager _client = new NetManager(_clientListener)
         {
-            IPv6Mode = IPv6Mode.DualMode,
+            //IPv6Mode = IPv6Mode.DualMode,
             NatPunchEnabled = true
         };
         
         EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
         natPunchListener.NatIntroductionSuccess += (point, addrType, token) =>
         {
-            var peer = _client.Connect(point, token);
+            var peer = _client.Connect(point, PunchUtils.ConnectToken);
             Console.WriteLine($"NatIntroductionSuccess {addrType} - Connecting to game {PunchUtils.SplitToken(token).gameToken} isServer({PunchUtils.SplitToken(token).isServer}): {point.Address}:{point.Port}, type: {addrType}, connection created: {peer != null}");
             // TODO: Pass traffic to verify (ICE)
             if (peer != null)
@@ -98,7 +98,6 @@ public class NATPunchClient
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         };
-        
         _client.NatPunchModule.Init(natPunchListener);
         _client.Start();
         Console.WriteLine("sending NatIntroductionRequest....");
