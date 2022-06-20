@@ -33,7 +33,7 @@ public class NATPunchClient
         int ServerPort = DefaultServerPort;
         string ServerAddr = DefaultServerAddr;
         int junk;
-        // ugly, but whatever, I'll make it pretty later
+        // ugly, but whatever, I'll make it pretty later.  TODO: refactor this to a method to clean the flow
         Console.WriteLine("NATPunchClient <gameToken> <server|client> <serverPort> <serverAddress>");
         if(args.Length > 0)
         GameToken = args[0];
@@ -44,18 +44,18 @@ public class NATPunchClient
         if(args.Length > 3)
             ServerAddr = (args[3] != null) ? args[3] : DefaultServerAddr;
         
-        Console.WriteLine("Client for game {3} (Gameserver:{0}) checking Facilitator: {1}:{2}",IsServer, ServerAddr, ServerPort, GameToken);
+        Console.WriteLine("Client for game '{3}' (Gameserver:{0}) checking Facilitator: {1}:{2}",IsServer, ServerAddr, ServerPort, GameToken);
 
         EventBasedNetListener _clientListener = new EventBasedNetListener();
         
         _clientListener.PeerConnectedEvent += peer =>
         {
-            Console.WriteLine("PeerConnected: " + peer.EndPoint);
+            Console.WriteLine("PeerConnected: " + peer.EndPoint.Address + ":" + peer.EndPoint.Port);
         };
 
         _clientListener.NetworkReceiveEvent += (peer, reader, channelNumber, deliveryMethod) =>
         {
-            Console.WriteLine("We got: {0} from {1}", reader.GetString(100 /* max length of string */), peer.EndPoint.Address);
+            Console.WriteLine("We got: {0} from {1}", reader.GetString(100 /* max length of string */), peer.EndPoint.ToString());
             reader.Recycle();
         };
         
@@ -67,16 +67,20 @@ public class NATPunchClient
 
         _clientListener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
         {
-            Console.WriteLine("PeerDisconnected: " + disconnectInfo.Reason);
+            Console.WriteLine($"Peer {peer.EndPoint.ToString()} Disconnected: " + disconnectInfo.Reason);
             if (disconnectInfo.AdditionalData.AvailableBytes > 0)
             {
                 Console.WriteLine("Disconnect data: " + disconnectInfo.AdditionalData.GetInt());
             }
         };
+        _clientListener.DeliveryEvent += (peer, data) =>
+        {
+            Console.WriteLine($"{peer.EndPoint.ToString()} delievery event with: " + data.ToString());
+        };
         
         NetManager _client = new NetManager(_clientListener)
         {
-            //IPv6Mode = IPv6Mode.DualMode,
+            IPv6Mode = IPv6Mode.DualMode,
             NatPunchEnabled = true
         };
         

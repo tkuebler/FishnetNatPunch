@@ -143,7 +143,7 @@ namespace FNNP
 
 
                             //Clear dictionary of waiting client, because it's been introduced to the server
-                            Console.WriteLine("Removing client {6} from {5}",
+                            Console.WriteLine("Removing client {6} from {5} wait queue",
                                 waitPeer.InternalAddr,
                                 waitPeer.ExternalAddr,
                                 localEndPoint,
@@ -245,7 +245,7 @@ namespace FNNP
             };
             NetManager _puncher = new NetManager(clientListener)
             {
-                //IPv6Mode = IPv6Mode.DualMode,
+                IPv6Mode = IPv6Mode.DualMode,
                 NatPunchEnabled = true
             };
             ;
