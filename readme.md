@@ -53,10 +53,11 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 ## Setting up a multiple NAT network test environment using VirtualBox, Ubuntu Server and pfSense (router software).
 
 
-You can [set up](https://www.nakivo.com/blog/virtualbox-network-setting-guide/) multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs, each using connection type of 'Nat Network', different NAT Networks for each VM and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind different NAT Networks to that facilitator.
+You can [set up](https://www.nakivo.com/blog/virtualbox-network-setting-guide/) multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs in linux host / firewall pairs and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind their NAT router to that facilitator.
 
 [Decent Guide to setting up NAT Networks using VirtualBox](https://www.techbeatly.com/how-to-create-and-use-natnetwork-in-virtualbox/)
 
+![Test Bed](images/testbed.png)
 How I do it with VirtualBox (free):
 
 - use [ubuntu linux server](https://ubuntu.com/download/server) and the command line mode for the clients for testing.
