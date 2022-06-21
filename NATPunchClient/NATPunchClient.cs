@@ -103,7 +103,7 @@ public class NATPunchClient
             }
             else
             {
-                Console.WriteLine($"Error with Nat Introduction with  peer {peer.EndPoint.Address}:{peer.EndPoint.Port} from {_client.LocalPort.ToString()}. connected peers for this client: {_client.ConnectedPeerList.Count}");
+                Console.WriteLine($"Error with Nat Introduction {_client.LocalPort.ToString()}. {_client.ConnectedPeerList.Count} connected peers for this client.");
             }
         };
         _client.NatPunchModule.Init(natPunchListener);
