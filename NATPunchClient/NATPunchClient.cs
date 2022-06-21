@@ -32,6 +32,7 @@ public class NATPunchClient
         bool IsServer = false;
         int ServerPort = DefaultServerPort;
         string ServerAddr = DefaultServerAddr;
+        
         int junk;
         // ugly, but whatever, I'll make it pretty later.  TODO: refactor this to a method to clean the flow
         Console.WriteLine("NATPunchClient <gameToken> <server|client> <serverPort> <serverAddress>");
@@ -97,10 +98,12 @@ public class NATPunchClient
             if (peer != null)
             {
                 Console.WriteLine($"Nat Punched for: {peer.EndPoint.Address}:{peer.EndPoint.Port}. {peer.ConnectionState} from {_client.LocalPort.ToString()}");
+                if (IsServer)
+                    _client.NatPunchModule.Init(natPunchListener);
             }
             else
             {
-                Console.WriteLine($"Error with Nat Introduction sucess peer. connected peers for this client: {_client.ConnectedPeerList.Count}");
+                Console.WriteLine($"Error with Nat Introduction with  peer {peer.EndPoint.Address}:{peer.EndPoint.Port} from {_client.LocalPort.ToString()}. connected peers for this client: {_client.ConnectedPeerList.Count}");
             }
         };
         _client.NatPunchModule.Init(natPunchListener);

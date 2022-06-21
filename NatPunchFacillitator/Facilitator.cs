@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading;
 
 // based on : https://github.com/RevenantX/LiteNetLib/blob/master/LibSample/HolePunchServerTest.cs
+// src: https://github.com/tkuebler/FishnetNatPunch
 
 namespace FNNP
 {
@@ -219,6 +220,7 @@ namespace FNNP
             int ServerPort = DefaultServerPort;
             string ServerAddr = DefaultServerAddr;
             Console.WriteLine("NatPunchFacillitator <serverPort> <serverAddress>");
+            Console.WriteLine("https://github.com/tkuebler/FishnetNatPunch");
             int junk;
             // ugly, but whatever, I'll make it pretty later
             if (args.Length > 0)
@@ -226,7 +228,7 @@ namespace FNNP
             if(args.Length > 1)
                 ServerAddr = (args[1] != null) ? args[1] : DefaultServerAddr;
             
-            Console.WriteLine("=== HolePunch Server v0.1 alpha " + ServerAddr + ":" + ServerPort + " ===");
+            Console.WriteLine("=== UDP NAT HolePunch Facillitator v0.1 alpha running on " + ServerAddr + ":" + ServerPort + " ===");
 
 
             EventBasedNetListener clientListener = new EventBasedNetListener();
@@ -255,7 +257,7 @@ namespace FNNP
             _puncher.NatPunchModule.Init(punchListener);
 
             // keep going until ESCAPE is pressed
-            Console.WriteLine("Press ESC to quit");
+            Console.WriteLine("Press ESC to quit.   Press 'I' for server info");
 
             while (true)
             {
@@ -266,10 +268,9 @@ namespace FNNP
                     {
                         break;
                     }
-
-                    if (key == ConsoleKey.A)
+                    if (key == ConsoleKey.I)
                     {
-                        Console.WriteLine("Server stopped");
+                        Console.WriteLine($"Info: {_puncher.Statistics}");
                     }
                 }
 
