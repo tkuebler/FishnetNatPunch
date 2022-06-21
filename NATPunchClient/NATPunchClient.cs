@@ -51,6 +51,10 @@ public class NATPunchClient
         _clientListener.PeerConnectedEvent += peer =>
         {
             Console.WriteLine("PeerConnected: " + peer.EndPoint.Address + ":" + peer.EndPoint.Port);
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put("Hello?");
+            writer.Put("Are we good?");
+            peer.Send(writer, DeliveryMethod.ReliableOrdered);
         };
 
         _clientListener.NetworkReceiveEvent += (peer, reader, channelNumber, deliveryMethod) =>
@@ -92,12 +96,7 @@ public class NATPunchClient
             // TODO: Pass traffic to verify (ICE)
             if (peer != null)
             {
-                Console.WriteLine($"Sending hello message to {peer.EndPoint.Address}:{peer.EndPoint.Port}. {peer.ConnectionState} from {_client.LocalPort.ToString()}");
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put("Hello?");
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-                writer.Put("Are we good?");
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                Console.WriteLine($"Nat Punched for: {peer.EndPoint.Address}:{peer.EndPoint.Port}. {peer.ConnectionState} from {_client.LocalPort.ToString()}");
             }
             else
             {
