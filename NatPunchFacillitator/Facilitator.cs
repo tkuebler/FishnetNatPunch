@@ -103,7 +103,8 @@ namespace FNNP
                     WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
                         tokenData.gameToken);
                     _waitingServers[tokenData.gameToken] = _peer;
-                    Console.WriteLine("Added waiting server ({0}) i {1} - o {2}", _peer.ClientId, _peer.InternalAddr, _peer.ExternalAddr );
+                    Console.WriteLine("Added waiting server ({0}) i {1} - o {2}", _peer.ClientId, _peer.InternalAddr,
+                        _peer.ExternalAddr);
                 }
 
                 // drain queue, your server has arrived
@@ -153,10 +154,11 @@ namespace FNNP
                                 waitPeer.GameToken,
                                 waitPeer.ClientId);
 
-                             // add to the remove list the thing we just introduced to the server
-                             removePeers.Add(waitPeer);
+                            // add to the remove list the thing we just introduced to the server
+                            removePeers.Add(waitPeer);
                         }
                     }
+
                     // remove list of peers to remove from queue TODO: use the proper existing data structure
                     foreach (var removePeer in removePeers)
                     {
@@ -196,7 +198,9 @@ namespace FNNP
                     WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
                         tokenData.gameToken);
                     _waitingPeers[tokenData.gameToken].Add(_peer);
-                    Console.WriteLine("No server for " +tokenData.gameToken+ ". Wait peer({2}) created.  i({0}) e({1})", localEndPoint,
+                    Console.WriteLine(
+                        "No server for " + tokenData.gameToken + ". Wait peer({2}) created.  i({0}) e({1})",
+                        localEndPoint,
                         remoteEndPoint, _peer.ClientId, _peer.IsGameServer);
                     // we'll catch this the flip side?
                 }
@@ -225,17 +229,22 @@ namespace FNNP
             // ugly, but whatever, I'll make it pretty later
             if (args.Length > 0)
                 ServerPort = args != null && (int.TryParse(args[0], out junk)) ? junk : DefaultServerPort;
-            if(args.Length > 1)
+            if (args.Length > 1)
                 ServerAddr = (args[1] != null) ? args[1] : DefaultServerAddr;
-            
-            Console.WriteLine("=== UDP NAT HolePunch Facillitator v0.1 alpha running on " + ServerAddr + ":" + ServerPort + " ===");
+
+            Console.WriteLine("=== UDP NAT HolePunch Facillitator v0.1 alpha running on " + ServerAddr + ":" +
+                              ServerPort + " ===");
 
 
             EventBasedNetListener clientListener = new EventBasedNetListener();
 
             clientListener.PeerConnectedEvent += peer => { Console.WriteLine("PeerConnected: " + peer.EndPoint); };
 
-            clientListener.ConnectionRequestEvent += request => { request.AcceptIfKey(PunchUtils.ConnectToken); Console.WriteLine($"Conrequest {request.RemoteEndPoint.ToString()}");};
+            clientListener.ConnectionRequestEvent += request =>
+            {
+                request.AcceptIfKey(PunchUtils.ConnectToken);
+                Console.WriteLine($"Conrequest {request.RemoteEndPoint.ToString()}");
+            };
 
             clientListener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
             {
@@ -268,6 +277,7 @@ namespace FNNP
                     {
                         break;
                     }
+
                     if (key == ConsoleKey.I)
                     {
                         Console.WriteLine($"Info: {_puncher.Statistics}");
@@ -290,7 +300,6 @@ namespace FNNP
                         }
                     }
                 }
-
 
                 //remove
                 for (int i = 0; i < punchListener._peersToRemove.Count; i++)

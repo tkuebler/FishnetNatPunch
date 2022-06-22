@@ -98,8 +98,6 @@ public class NATPunchClient
             if (peer != null)
             {
                 Console.WriteLine($"Nat Punched for: {peer.EndPoint.Address}:{peer.EndPoint.Port}. {peer.ConnectionState} from {_client.LocalPort.ToString()}");
-                if (IsServer)
-                    _client.NatPunchModule.Init(natPunchListener);
             }
             else
             {
