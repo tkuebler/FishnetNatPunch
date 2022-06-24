@@ -221,6 +221,7 @@ namespace FNNP
     {
         private readonly Dictionary<string, WaitPeer> _waitingPeers = new Dictionary<string, WaitPeer>();
         private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 60);
+        
         public const int DefaultServerPort = 61111;
         public const string DefaultServerAddr = "localhost";
         //static void Main(string[] args)
@@ -232,6 +233,8 @@ namespace FNNP
             Console.WriteLine("NatPunchFacillitator <serverPort> <serverAddress>");
             Console.WriteLine("https://github.com/tkuebler/FishnetNatPunch");
             int junk;
+            
+            // TODO: encorporate the new config extensions that part the command line for you here
             // ugly, but whatever, I'll make it pretty later
             // if (args.Length > 0)
             //     ServerPort = args != null && (int.TryParse(args[0], out junk)) ? junk : DefaultServerPort;
@@ -274,8 +277,10 @@ namespace FNNP
             // keep going until ESCAPE is pressed
             Console.WriteLine("Press ESC to quit.   Press 'I' for server info");
 
+            // TODO: refactor around the aynch task
             while (true)
             {
+                // TODO: move this to the daemon wrapper
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
@@ -318,7 +323,7 @@ namespace FNNP
 
                 Thread.Sleep(10);
             }
-
+            // TODO: refactor
             //_puncher.Stop();
             return Task.CompletedTask;
         }
