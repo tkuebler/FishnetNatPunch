@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using LiteNetLib;
 using System.Net;
 using System.Threading;
-
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 // based on : https://github.com/RevenantX/LiteNetLib/blob/master/LibSample/HolePunchServerTest.cs
 // src: https://github.com/tkuebler/FishnetNatPunch
+// new .net hosting/daemon/options extension: https://www.atmosera.com/blog/creating-a-daemon-with-net-core-part-2/
 
 namespace FNNP
 {
@@ -25,7 +28,7 @@ namespace FNNP
         }
         public static int NextClientId()
         {
-            ++ClientIdCounter;
+            ++ClientIdCounter; // TODO: roll over at max int?
             return ClientIdCounter;
         }
         public WaitPeer(IPEndPoint internalAddr, IPEndPoint externalAddr, bool isGameServer, String gameToken)
@@ -39,8 +42,10 @@ namespace FNNP
         }
     }
 
+    // Lazy/quick way to not touch the LiteLibNet Punchthrough module but add some stuff to the request
     public struct TokenData
     {
+        public const string ConnectToken = "FNNP";
         public bool isServer;
         public string gameToken;
         public TokenData(bool serv, string token)
@@ -48,23 +53,22 @@ namespace FNNP
             isServer = serv;
             gameToken = token;
         }
-    }
 
-    // Lazy/quick way to not touch the LiteLibNet Punchthrough module but add some stuff to the request
-    public static class PunchUtils
-    {
-        public const string ConnectToken = "FNNP"; // TODO: unhard code this, so lazy...
-        public static TokenData SplitToken(string token)
+        public TokenData(string joinedToken)
         {
-            string[] split = token.Split(":");
-            return new TokenData() { isServer = Boolean.Parse(split[0]), gameToken = split[1] };
+            (isServer, gameToken) = ParseToken(joinedToken);
         }
-        public static string MakeToken(bool isServer, string gameToken)
+        public static string CreateToken(bool isServer, string gameToken)
         {
             return isServer.ToString() + ":" + gameToken;
         }
+        public static (bool, string) ParseToken(string token)
+        {
+            var tmp = token.Split(token);
+            return (Boolean.Parse(tmp[0]), tmp[1]);
+        }
     }
-
+    
     public class PunchListener : INatPunchListener
     {
         private NetManager _puncher;
@@ -79,7 +83,7 @@ namespace FNNP
         void INatPunchListener.OnNatIntroductionRequest(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint,
             string token)
         {
-            TokenData tokenData = PunchUtils.SplitToken(token);
+            TokenData tokenData = new TokenData(token);
 
             if (tokenData.isServer)
             {
@@ -213,13 +217,15 @@ namespace FNNP
         }
     }
 
-    public class Facilitator
+    public class FacillitatorService : IHostedService, IDisposable
     {
         private readonly Dictionary<string, WaitPeer> _waitingPeers = new Dictionary<string, WaitPeer>();
         private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 60);
         public const int DefaultServerPort = 61111;
         public const string DefaultServerAddr = "localhost";
-        static void Main(string[] args)
+        //static void Main(string[] args)
+
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             int ServerPort = DefaultServerPort;
             string ServerAddr = DefaultServerAddr;
@@ -227,10 +233,10 @@ namespace FNNP
             Console.WriteLine("https://github.com/tkuebler/FishnetNatPunch");
             int junk;
             // ugly, but whatever, I'll make it pretty later
-            if (args.Length > 0)
-                ServerPort = args != null && (int.TryParse(args[0], out junk)) ? junk : DefaultServerPort;
-            if (args.Length > 1)
-                ServerAddr = (args[1] != null) ? args[1] : DefaultServerAddr;
+            // if (args.Length > 0)
+            //     ServerPort = args != null && (int.TryParse(args[0], out junk)) ? junk : DefaultServerPort;
+            // if (args.Length > 1)
+            //     ServerAddr = (args[1] != null) ? args[1] : DefaultServerAddr;
 
             Console.WriteLine("=== UDP NAT HolePunch Facillitator v0.1 alpha running on " + ServerAddr + ":" +
                               ServerPort + " ===");
@@ -242,7 +248,7 @@ namespace FNNP
 
             clientListener.ConnectionRequestEvent += request =>
             {
-                request.AcceptIfKey(PunchUtils.ConnectToken);
+                request.AcceptIfKey(TokenData.ConnectToken);
                 Console.WriteLine($"Conrequest {request.RemoteEndPoint.ToString()}");
             };
 
@@ -314,6 +320,21 @@ namespace FNNP
             }
 
             _puncher.Stop();
+            return Task.CompletedTask;
+        }
+    
+
+    // public Task StartAsync(CancellationToken cancellationToken)
+        // {
+        //     throw new NotImplementedException();
+        // }
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

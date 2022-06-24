@@ -45,7 +45,7 @@ public class NATPunchClient
         if(args.Length > 3)
             ServerAddr = (args[3] != null) ? args[3] : DefaultServerAddr;
         
-        Console.WriteLine("Client for game '{3}' (Gameserver:{0}) checking Facilitator: {1}:{2}",IsServer, ServerAddr, ServerPort, GameToken);
+        Console.WriteLine("Client for game '{3}' (Gameserver:{0}) checking FacilitatorService: {1}:{2}",IsServer, ServerAddr, ServerPort, GameToken);
 
         EventBasedNetListener _clientListener = new EventBasedNetListener();
         
@@ -67,7 +67,7 @@ public class NATPunchClient
         _clientListener.ConnectionRequestEvent += request =>
         {
             Console.WriteLine("connection request from {0}:{1}", request.RemoteEndPoint.Address, request.RemoteEndPoint.Port);
-            request.AcceptIfKey(PunchUtils.ConnectToken);
+            request.AcceptIfKey(TokenData.ConnectToken);
         };
 
         _clientListener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
@@ -91,9 +91,9 @@ public class NATPunchClient
         EventBasedNatPunchListener natPunchListener = new EventBasedNatPunchListener();
         natPunchListener.NatIntroductionSuccess += (point, addrType, token) =>
         {
-            var peer = _client.Connect(point,PunchUtils.ConnectToken);
+            var peer = _client.Connect(point,TokenData.ConnectToken);
             
-            Console.WriteLine($"NatIntroductionSuccess {addrType} - Connecting to game {PunchUtils.SplitToken(token).gameToken} isServer({PunchUtils.SplitToken(token).isServer}): {point.Address}:{point.Port}, type: {addrType}, connection created: {peer != null}");
+            Console.WriteLine($"NatIntroductionSuccess {addrType} - Connecting to game {TokenData.ParseToken(token).Item2} isServer({TokenData.ParseToken(token).Item2}): {point.Address}:{point.Port}, type: {addrType}, connection created: {peer != null}");
             // TODO: Pass traffic to verify (ICE)
             if (peer != null)
             {
@@ -107,7 +107,7 @@ public class NATPunchClient
         _client.NatPunchModule.Init(natPunchListener);
         _client.Start();
         Console.WriteLine("sending NatIntroductionRequest....");
-        _client.NatPunchModule.SendNatIntroduceRequest(ServerAddr, ServerPort, PunchUtils.MakeToken(IsServer, GameToken));
+        _client.NatPunchModule.SendNatIntroduceRequest(ServerAddr, ServerPort, TokenData.CreateToken(IsServer, GameToken));
 
         Console.WriteLine("Press ESC to quit");
 
