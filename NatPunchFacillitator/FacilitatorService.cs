@@ -5,7 +5,10 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NUnit.Framework.Internal;
+
 // based on : https://github.com/RevenantX/LiteNetLib/blob/master/LibSample/HolePunchServerTest.cs
 // src: https://github.com/tkuebler/FishnetNatPunch
 // new .net hosting/daemon/options extension: https://www.atmosera.com/blog/creating-a-daemon-with-net-core-part-2/
@@ -80,6 +83,7 @@ namespace FNNP
             _puncher = puncher;
         }
 
+        
         void INatPunchListener.OnNatIntroductionRequest(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint,
             string token)
         {
@@ -224,37 +228,34 @@ namespace FNNP
         
         public const int DefaultServerPort = 61111;
         public const string DefaultServerAddr = "localhost";
-        //static void Main(string[] args)
-
+        private readonly ILogger<FacillitatorService> _logger;
+        private readonly IOptions<FacillitatorConfig> _config;
+        public readonly int ServerPort = DefaultServerPort;
+        public readonly string ServerAddr = DefaultServerAddr;
+        private NetManager _puncher;
+        
+        public FacillitatorService(ILogger<FacillitatorService> logger, IOptions<FacillitatorConfig> config)
+        {
+            _logger = logger;
+            _config = config;
+            ServerPort = (config.Value.ServerPort != 0) ? config.Value.ServerPort : DefaultServerPort;
+            ServerAddr = (config.Value.ServerAddress != null) ? config.Value.ServerAddress : DefaultServerAddr;
+        }
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            int ServerPort = DefaultServerPort;
-            string ServerAddr = DefaultServerAddr;
             Console.WriteLine("NatPunchFacillitator <serverPort> <serverAddress>");
             Console.WriteLine("https://github.com/tkuebler/FishnetNatPunch");
-            int junk;
-            
-            // TODO: encorporate the new config extensions that part the command line for you here
-            // ugly, but whatever, I'll make it pretty later
-            // if (args.Length > 0)
-            //     ServerPort = args != null && (int.TryParse(args[0], out junk)) ? junk : DefaultServerPort;
-            // if (args.Length > 1)
-            //     ServerAddr = (args[1] != null) ? args[1] : DefaultServerAddr;
-
             Console.WriteLine("=== UDP NAT HolePunch Facillitator v0.1 alpha running on " + ServerAddr + ":" +
                               ServerPort + " ===");
-
-
+            
+            // Create the listener, register it's events
             EventBasedNetListener clientListener = new EventBasedNetListener();
-
             clientListener.PeerConnectedEvent += peer => { Console.WriteLine("PeerConnected: " + peer.EndPoint); };
-
             clientListener.ConnectionRequestEvent += request =>
             {
                 request.AcceptIfKey(TokenData.ConnectToken);
                 Console.WriteLine($"Conrequest {request.RemoteEndPoint.ToString()}");
             };
-
             clientListener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
             {
                 Console.WriteLine("PeerDisconnected: " + disconnectInfo.Reason);
@@ -263,14 +264,18 @@ namespace FNNP
                     Console.WriteLine("Disconnect data: " + disconnectInfo.AdditionalData.GetInt());
                 }
             };
+            
+            // TODO: move this to an Init?
+            // create the peer listener
             NetManager _puncher = new NetManager(clientListener)
             {
                 //IPv6Mode = IPv6Mode.DualMode,
-                NatPunchEnabled = true
+                NatPunchEnabled = true,
+                EnableStatistics = true
             };
-            ;
-
             _puncher.Start(ServerPort);
+            
+            // Create and initialize the punch listener
             PunchListener punchListener = new PunchListener(_puncher);
             _puncher.NatPunchModule.Init(punchListener);
 
@@ -291,6 +296,8 @@ namespace FNNP
 
                     if (key == ConsoleKey.I)
                     {
+                        Console.WriteLine($"Game Clients in Queue: {punchListener._waitingPeers.Count}");
+                        Console.WriteLine($"Game Servers in Queue: {punchListener._waitingServers.Count}");
                         Console.WriteLine($"Info: {_puncher.Statistics}");
                     }
                 }
@@ -323,8 +330,7 @@ namespace FNNP
 
                 Thread.Sleep(10);
             }
-            // TODO: refactor
-            //_puncher.Stop();
+            
             return Task.CompletedTask;
         }
     
@@ -335,8 +341,8 @@ namespace FNNP
         // }
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            //throw new NotImplementedException();
             Console.WriteLine("StopAsync");
+            _puncher.Stop();
             return Task.CompletedTask;
         }
         public void Dispose()

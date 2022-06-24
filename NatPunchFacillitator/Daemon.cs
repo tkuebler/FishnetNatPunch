@@ -8,8 +8,8 @@ namespace FNNP
 
     public class FacillitatorConfig
     {
-        public int Port { get; set; }
-        public string IPAddress { get; set; }
+        public int ServerPort { get; set; }
+        public string ServerAddress { get; set; }
     }
 
     public class Daemon
@@ -24,6 +24,7 @@ namespace FNNP
                     if (args != null)
                     {
                         config.AddCommandLine(args);
+                        Console.WriteLine("Got args: " + args.ToList().ToString());
                     }
                 })
                 .ConfigureServices((hostContext, services) =>
