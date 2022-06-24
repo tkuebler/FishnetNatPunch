@@ -60,11 +60,11 @@ namespace FNNP
         }
         public static string CreateToken(bool isServer, string gameToken)
         {
-            return isServer.ToString() + ":" + gameToken;
+            return isServer.ToString() + "::" + gameToken;
         }
         public static (bool, string) ParseToken(string token)
         {
-            var tmp = token.Split(token);
+            var tmp = token.Split("::");
             return (Boolean.Parse(tmp[0]), tmp[1]);
         }
     }
@@ -319,7 +319,7 @@ namespace FNNP
                 Thread.Sleep(10);
             }
 
-            _puncher.Stop();
+            //_puncher.Stop();
             return Task.CompletedTask;
         }
     
@@ -330,11 +330,14 @@ namespace FNNP
         // }
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            Console.WriteLine("StopAsync");
+            return Task.CompletedTask;
         }
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            Console.WriteLine("Dispose");
         }
     }
 }
