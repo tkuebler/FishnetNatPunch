@@ -53,7 +53,9 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 ## Setting up a multiple NAT network test environment using VirtualBox, Ubuntu Server and pfSense (router software).
 
 
-You can [set up](https://www.nakivo.com/blog/virtualbox-network-setting-guide/) multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs in linux host / firewall pairs and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind their NAT router to that facilitator.
+You can [set up](https://www.nakivo.com/blog/virtualbox-network-setting-guide/) multiple [VirtualBox](https://www.oracle.com/virtualization/virtualbox/) VMs in linux host / firewall pairs and run your Faccilitator on your regular host to similate things.  You can then make connections from the clients on each of the virtualbox guests behind their NAT router to that facilitator. 
+
+**Note** you can do this with Parallels or VMWare as well, I've tested with Parallels and have switched over to it from virtualbox because it's faster and more stable (but not free). If you use parallels you will likely not be able to installed pfSense until you tell the bootloader to use efi (do the _opposite_ of [these instructions to disable EFI](https://kb.parallels.com/en/122735) - ie enable efi by useing 'vm.bios.efi=1' in the bios boot flag section of boot order config in the vm ).
 
 [Decent Guide to setting up NAT Networks using VirtualBox](https://www.techbeatly.com/how-to-create-and-use-natnetwork-in-virtualbox/)
 
@@ -64,6 +66,7 @@ How I do it with VirtualBox (free):
 	- create n number of Internal Networks with different network ip blocks
 	- create a base disk image [with dotnet](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2204) and base vm to clone
 	- clone the git project and compile
+		- note: probably best to clone it from your dev machine directly using ssh, so you don't have to push all the incremental changes during testing to the master then pull from there.  but.. you do you.
 	- clone the base vm using linked n times.
 	- assign a different Internal Network to each of the vms
 - Create n number of pfsense community edition (free) vms using the same 'create a base, then linked clones of it' technique.
