@@ -1,3 +1,6 @@
 [submodule "LiteNetLib"]
 	path = LiteNetLib
 	url = https://github.com/RevenantX/LiteNetLib.git
+[submodule "Open.NAT"]
+	path = Open.NAT
+	url = https://github.com/lontivero/Open.NAT.git

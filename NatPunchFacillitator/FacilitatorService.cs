@@ -102,7 +102,7 @@ namespace FNNP
                     }
                     else
                     {
-                        Console.Write($"ERROR: duplicate game key {tokenData.gameToken} from different server ip, ignoring.");
+                        Console.Write($"Warn: duplicate game key {tokenData.gameToken} from different server ip, ignoring.");
                         return;
                     }
                 }
