@@ -3,7 +3,6 @@ using LiteNetLib;
 using System.Net;
 using System.Runtime.InteropServices;
 using LiteNetLib.Utils;
-using Open.NAT;
 
 namespace FNNP{
 
@@ -27,10 +26,6 @@ public class NATPunchClient
     private const string DefaultServerAddr = "voneggut.worldsalad.games"; // supposedly free server at natpunch.jenkinssoftware.com
     private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 6);
 
-    public class UPNPTester
-    {
-        // 
-    }
     static void Main(string[] args)
     {
         string GameToken = "default";
@@ -49,11 +44,10 @@ public class NATPunchClient
             ServerPort = args != null && (int.TryParse(args[2], out junk)) ? junk : DefaultServerPort;
         if(args.Length > 3)
             ServerAddr = (args[3] != null) ? args[3] : DefaultServerAddr;
-        
-        var discoverer = new NatDiscoverer();
-        var device = await discoverer.DiscoverDeviceAsync();
-        var ip = await device.GetExternalIPAsync();
-        Console.WriteLine("The external IP Address is: {0} ", ip);
+
+        Console.WriteLine("getting remote ip...");
+        UPnPClient _upnp = new UPnPClient();
+        Console.WriteLine(_upnp.GetPublicIP());
         
         Console.WriteLine("Client for game '{3}' (Gameserver:{0}) checking FacilitatorService: {1}:{2}",IsServer, ServerAddr, ServerPort, GameToken);
 
