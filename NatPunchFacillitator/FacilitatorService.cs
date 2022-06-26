@@ -132,7 +132,7 @@ namespace FNNP
                         if (_waitingServers.ContainsKey(tokenData
                                 .gameToken)) // connect the server with the incoming request without queing
                         {
-                            Console.WriteLine("Wait peer found, sending introduction...");
+                            Console.WriteLine($"Wait peer found for game '{tokenData.gameToken}', sending introduction...");
                             //found in list - introduce client and host to eachother
                             Console.WriteLine(
                                 "{4}: queued client{5} - i({0}) e({1})\n to server:  i({2}) e({3})",
@@ -153,7 +153,7 @@ namespace FNNP
 
 
                             //Clear dictionary of waiting client, because it's been introduced to the server
-                            Console.WriteLine("Removing client {6} from {5} wait queue",
+                            Console.WriteLine($"Removing client {6} from {5} wait queue for game '{waitPeer.GameToken}'",
                                 waitPeer.InternalAddr,
                                 waitPeer.ExternalAddr,
                                 localEndPoint,
@@ -342,7 +342,7 @@ namespace FNNP
         public Task StopAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("StopAsync");
-            _puncher.Stop();
+            _puncher.Stop(); // TODO: fix ^C or other signals not catching in service task thread
             return Task.CompletedTask;
         }
         public void Dispose()
