@@ -102,7 +102,7 @@ namespace FNNP
                     }
                     else
                     {
-                        Console.Write("ERROR: duplicate game key from different server ip, ignoring.");
+                        Console.Write($"ERROR: duplicate game key {tokenData.gameToken} from different server ip, ignoring.");
                         return;
                     }
                 }
@@ -111,8 +111,8 @@ namespace FNNP
                     WaitPeer _peer = new WaitPeer(localEndPoint, remoteEndPoint, tokenData.isServer,
                         tokenData.gameToken);
                     _waitingServers[tokenData.gameToken] = _peer;
-                    Console.WriteLine("Added waiting server ({0}) i {1} - o {2}", _peer.ClientId, _peer.InternalAddr,
-                        _peer.ExternalAddr);
+                    Console.WriteLine("Added waiting server ({0}) i {1} - o {2} for game '{3}'", _peer.ClientId, _peer.InternalAddr,
+                        _peer.ExternalAddr, tokenData.gameToken);
                 }
 
                 // drain queue, your server has arrived
@@ -179,9 +179,9 @@ namespace FNNP
                 if (_waitingServers.ContainsKey(tokenData.gameToken))
                 {
                     WaitPeer _server = _waitingServers[tokenData.gameToken];
-                    Console.WriteLine("There is a server waiting for incoming client request...");
+                    Console.WriteLine($"There is a server waiting for incoming game '{tokenData.gameToken}' client request...");
                     Console.WriteLine(
-                        "{4}: direct client{5} - i({0}) e({1})\n to server:  i({2}) e({3})",
+                        "{4}: introducing client{5} - i({0}) e({1})\n to server:  i({2}) e({3})",
                         localEndPoint,
                         remoteEndPoint,
                         _server.InternalAddr,
@@ -207,7 +207,7 @@ namespace FNNP
                         tokenData.gameToken);
                     _waitingPeers[tokenData.gameToken].Add(_peer);
                     Console.WriteLine(
-                        "No server for " + tokenData.gameToken + ". Wait peer({2}) created.  i({0}) e({1})",
+                        "No server for " + tokenData.gameToken + ". Wait peer({2}) created.  i({0}) e({1}) in queue",
                         localEndPoint,
                         remoteEndPoint, _peer.ClientId, _peer.IsGameServer);
                     // we'll catch this the flip side?
