@@ -85,3 +85,4 @@ How I do it with VirtualBox (free):
 - [https://mirror-networking.gitbook.io/docs/transports/litenetlib-transport](https://mirror-networking.gitbook.io/docs/transports/litenetlib-transport)
 - [https://www.atmosera.com/blog/creating-a-daemon-with-net-core-part-1/](https://www.atmosera.com/blog/creating-a-daemon-with-net-core-part-1/)
 - [https://dev.to/deagahelio/getting-started-with-litenetlib-2fok](https://dev.to/deagahelio/getting-started-with-litenetlib-2fok)
+- [https://github.com/falahati/WindowsFirewallHelper](https://github.com/falahati/WindowsFirewallHelper)
