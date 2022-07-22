@@ -112,7 +112,7 @@ namespace FNNP
                 // Try deleting the port we opened before:
                 try
                 {
-                    await device.DeletePortMapAsync(mapping);
+                    //await device.DeletePortMapAsync(mapping);
                     Console.WriteLine("Deleting Mapping: protocol={0}, public={1}, private={2}", mapping.Protocol,
                         mapping.PublicPort, mapping.PrivatePort);
                 }
