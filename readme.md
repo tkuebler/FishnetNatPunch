@@ -6,8 +6,9 @@ Clients identify as either a game host or a game client and present a token/key 
 
 Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the TURN fallback for now.  Future plans are to [encorporate UPNP](https://github.com/lontivero/Open.NAT) and create a relay server for TURN as well and add fallback with a ICE moderator.
 
-### Dependency
-[https://github.com/RevenantX/LiteNetLib](https://github.com/RevenantX/LiteNetLib)
+### Dependencies
+- [https://github.com/RevenantX/LiteNetLib](https://github.com/RevenantX/LiteNetLib)
+- [https://github.com/alanmcgovern/Mono.Nat](https://github.com/alanmcgovern/Mono.Nat)
 ## Proposed Approach
 
 1. <del>Done: Create a standalone NAT Punchthrough Facillitator/Server based on LiteNetLib</del>
@@ -15,16 +16,15 @@ Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but withou
 1. <del>Done: Manually test multiple game servers and clients.</del>
 	- <del>multiple clients and session keys</del>
 	- <del>pass traffic to test punchthrough</del>
+1. (in progress) Implement UPnP with Faccilitator registry/token
+1. (in progress) Create a Unity project that uses this library
 1. Create Automated Tests against the punchthrough server that:
 	- Test multiple clients
 	- Test multiple session keys
 	- validate traffic can pass
 1. Detect [Symetrical NAT](https://webrtchacks.com/symmetric-nat/) and [warn](https://www.aligrant.com/web/blog/2017-01-05_pfsense_nat_traversal_and_games) - punt to relay directly
 1. (investigating) Create a client library that aligns with the TugBoat transport
-1. (investigating) Create a Unity project that uses this library
 1. (investigation) embed this in TugBoat
-1. (investigation) upnp
-
 
 ## Getting started doing dev
 
