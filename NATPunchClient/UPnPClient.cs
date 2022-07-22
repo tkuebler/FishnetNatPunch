@@ -1,6 +1,7 @@
 using System.Net;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Open.Nat;
 
 namespace FNNP
 {
@@ -31,6 +32,15 @@ namespace FNNP
             data.Close ();
             reader.Close ();
             return s;
+        }
+        public async Task<bool> TryToUPnP()
+        {
+            var discoverer = new NatDiscoverer();
+            var cts = new CancellationTokenSource(1000);
+            var device = await discoverer.DiscoverDeviceAsync(PortMapper.Upnp, cts);
+
+            await device.CreatePortMapAsync(new Mapping(Protocol.Tcp, 8600, 8600, "Test Mapping"));
+            return true;
         }
     }
 }

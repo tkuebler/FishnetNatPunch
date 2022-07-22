@@ -20,6 +20,7 @@
     <ItemGroup>
       <ProjectReference Include="..\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
       <ProjectReference Include="..\NatPunchFacillitator\NatPunchFacillitator.csproj" />
+      <ProjectReference Include="..\Open.NAT\Open.Nat\Open.Nat.csproj" />
     </ItemGroup>
 
 </Project>
