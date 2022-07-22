@@ -17,8 +17,7 @@ public class Tests
         UPnPClient upnp = new UPnPClient();
         string publicIP = upnp.GetPublicIP();
         
-        Task<bool> success = upnp.TryToUPnP();
-        Console.WriteLine($"got {success.Result}");
+        upnp.TryToUPnP();
         Assert.Pass();
     }
 }

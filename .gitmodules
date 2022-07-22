@@ -1,3 +1,6 @@
 [submodule "LiteNetLib"]
 	path = LiteNetLib
 	url = https://github.com/RevenantX/LiteNetLib.git
+[submodule "Mono.Nat"]
+	path = Mono.Nat
+	url = git@github.com:alanmcgovern/Mono.Nat.git
