@@ -20,4 +20,10 @@
       <ProjectReference Include="..\NATPunchClient\NATPunchClient.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="nunit.engine.api">
+        <HintPath>..\..\..\..\..\Applications\Rider.app\Contents\lib\ReSharperHost\TestRunner\Adapters\NUnit3\netstandard2.0\lib\nunit.engine.api.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

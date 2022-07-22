@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using FNNP;
+using NUnit.Engine;
 using NUnit.Framework.Internal;
 
 namespace TestNATPunch;
@@ -12,12 +14,14 @@ public class Tests
     }
 
     [Test]
-    public void Test1()
+    public async Task Test1()
     {
         UPnPClient upnp = new UPnPClient();
         string publicIP = upnp.GetPublicIP();
         
-        upnp.TryToUPnP();
+        Task tryit = upnp.TryToUPnP();
+        tryit.Wait();
         Assert.Pass();
     }
+
 }

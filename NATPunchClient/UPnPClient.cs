@@ -32,11 +32,19 @@ namespace FNNP
             reader.Close();
             return s;
         }
-        public void TryToUPnP() // TODO: make async
+
+        private TaskCompletionSource<object> _completionSource = new TaskCompletionSource<object>();
+        public async Task TryToUPnP() // TODO: make async
         {
             NatUtility.DeviceFound += DeviceFound;
-            NatUtility.Search(System.Net.IPAddress.Parse("192.168.0.1"), NatProtocol.Upnp);
-            Thread.Sleep(10000); // 10 seconds
+            Task runSearch = Task.Factory.StartNew(() => 
+                {
+                    NatUtility.Search(System.Net.
+                        IPAddress.Parse("192.168.1.1"), 
+                        NatProtocol.Upnp);
+                });
+            runSearch.Wait();
+            await _completionSource.Task; 
             NatUtility.StopDiscovery();
         }
 
@@ -132,10 +140,15 @@ namespace FNNP
                 Console.WriteLine("External IP: {0}", await device.GetExternalIPAsync());
                 Console.WriteLine("Done...");
             }
+            catch
+            {
+                Console.WriteLine("unknown error..." );
+            }
             finally
             {
                 locker.Release();
             }
+            _completionSource.SetResult(null);
         }
     }
 }
