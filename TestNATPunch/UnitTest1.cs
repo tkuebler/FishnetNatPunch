@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using FNNP;
+using Mono.Nat;
 using NUnit.Engine;
 using NUnit.Framework.Internal;
 
@@ -16,12 +17,12 @@ public class Tests
     [Test]
     public async Task Test1()
     {
-        UPnPClient upnp = new UPnPClient();
-        string publicIP = upnp.GetPublicIP();
-        
+        UPnPClient upnp = new UPnPClient("192.168.1.1", Protocol.Udp);
+        string publicIP = upnp.GetPublicIp();
+        Assert.NotNull(publicIP);
         Task tryit = upnp.TryToUPnP();
         tryit.Wait();
-        Assert.Pass();
+        Assert.Null(tryit.Exception);
     }
 
 }
