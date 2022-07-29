@@ -12,9 +12,9 @@ namespace FNNP
         private const string? DefaultRouter = "192.168.1.1"; 
         private const string PublicIpApi = "https://api.my-ip.io/ip";
         private readonly Protocol _ipProtocol;
-        public UPnPClient(string? ipServer, Protocol ipProtocol)
+        public UPnPClient(string? ipRouter, Protocol ipProtocol)
         {
-            _ipRouter = (ipServer == null) ? DefaultRouter : ipServer;
+            _ipRouter = (ipRouter == null) ? DefaultRouter : ipRouter;
             _ipProtocol = ipProtocol;
         }
         public UPnPClient() : this(DefaultRouter, Protocol.Tcp) {}
