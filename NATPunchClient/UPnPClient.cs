@@ -55,7 +55,7 @@ namespace FNNP
         {
             await TryToUPnP(null, ipProtocol, natProtocol);
         }
-        public async Task TryToUPnP(string? routerIp, Protocol ipProtocol, NatProtocol natProtocol) // TODO: make async
+        public async Task TryToUPnP(string? routerIp, Protocol ipProtocol, NatProtocol natProtocol) 
         {
             NatUtility.DeviceFound += DeviceFound;
             // TODO: support device discovery
@@ -85,9 +85,56 @@ namespace FNNP
             return result;
         }
 
-        public async void DeletePortMapping(INatDevice device, Protocol ipProtocol)
+        public async Task<Mapping> GetPortMapping(INatDevice device, Mapping mapping)
         {
-            
+            // Try to retrieve confirmation on the port map we just created:
+            try
+            {
+                Mapping m = await device.GetSpecificMappingAsync(Protocol.Udp, mapping.PublicPort);
+                Console.WriteLine("Specific Mapping: protocol={0}, public={1}, private={2}", m.Protocol,
+                    m.PublicPort,
+                    m.PrivatePort);
+                return m;
+            }
+            catch
+            {
+                Console.WriteLine("Couldn't get specific mapping");
+            }
+            return null;
+        }
+        public async Task<Mapping[]> GetPortMappings(INatDevice device)
+        {
+            // Try retrieving all port maps:
+            try
+            {
+                var mappings = await device.GetAllMappingsAsync();
+                if (mappings.Length == 0)
+                    Console.WriteLine("No existing uPnP mappings found.");
+                foreach (Mapping mp in mappings)
+                    Console.WriteLine("Existing Mappings: protocol={0}, public={1}, private={2}", mp.Protocol,
+                        mp.PublicPort, mp.PrivatePort);
+                return mappings;
+            }
+            catch
+            {
+                Console.WriteLine("Couldn't get all mappings");
+            }
+
+            return null;
+        }
+        public async Task DeletePortMapping(INatDevice device, Mapping mapping)
+        {
+            // Try deleting the port we opened before:
+            try
+            {
+                await device.DeletePortMapAsync(mapping);
+                Console.WriteLine("Deleting Mapping: protocol={0}, public={1}, private={2}", mapping.Protocol,
+                    mapping.PublicPort, mapping.PrivatePort);
+            }
+            catch
+            {
+                Console.WriteLine("Couldn't delete specific mapping");
+            }
         }
         
         readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
@@ -117,61 +164,13 @@ namespace FNNP
                 /******************************************/
                 Mapping mapping = await MapPort(device, _ipProtocol);
 
-                // Try to retrieve confirmation on the port map we just created:
-                try
-                {
-                    Mapping m = await device.GetSpecificMappingAsync(Protocol.Udp, mapping.PublicPort);
-                    Console.WriteLine("Specific Mapping: protocol={0}, public={1}, private={2}", m.Protocol,
-                        m.PublicPort,
-                        m.PrivatePort);
-                }
-                catch
-                {
-                    Console.WriteLine("Couldn't get specific mapping");
-                }
+                Mapping mappingVerify = await GetPortMapping(device, mapping);
 
-                // Try retrieving all port maps:
-                try
-                {
-                    var mappings = await device.GetAllMappingsAsync();
-                    if (mappings.Length == 0)
-                        Console.WriteLine("No existing uPnP mappings found.");
-                    foreach (Mapping mp in mappings)
-                        Console.WriteLine("Existing Mappings: protocol={0}, public={1}, private={2}", mp.Protocol,
-                            mp.PublicPort, mp.PrivatePort);
-                }
-                catch
-                {
-                    Console.WriteLine("Couldn't get all mappings");
-                }
+                Mapping[] maps = await GetPortMappings(device);
 
-                // Try deleting the port we opened before:
-                try
-                {
-                    await device.DeletePortMapAsync(mapping);
-                    Console.WriteLine("Deleting Mapping: protocol={0}, public={1}, private={2}", mapping.Protocol,
-                        mapping.PublicPort, mapping.PrivatePort);
-                }
-                catch
-                {
-                    Console.WriteLine("Couldn't delete specific mapping");
-                }
+                await DeletePortMapping(device, mapping);
 
-                // Try retrieving all port maps:
-                try
-                {
-                    var mappings = await device.GetAllMappingsAsync();
-                    if (mappings.Length == 0)
-                        Console.WriteLine("No existing uPnP mappings found.");
-                    foreach (Mapping mp in mappings)
-                        Console.WriteLine("Existing Mapping: protocol={0}, public={1}, private={2}", mp.Protocol,
-                            mp.PublicPort, mp.PrivatePort);
-                }
-                catch
-                {
-                    Console.WriteLine("Couldn't get all mappings");
-
-                }
+                mappingVerify = await GetPortMapping(device, mapping);
 
                 Console.WriteLine("External IP: {0}", await device.GetExternalIPAsync());
                 Console.WriteLine("Done...");

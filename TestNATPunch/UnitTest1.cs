@@ -1,28 +1,29 @@
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using FNNP;
 using Mono.Nat;
-using NUnit.Engine;
-using NUnit.Framework.Internal;
 
 namespace TestNATPunch;
 
 public class Tests
 {
+    private UPnPClient upnp;
     [SetUp]
     public void Setup()
     {
+        upnp = new UPnPClient("192.168.1.1", Protocol.Udp);
     }
 
     [Test]
-    public async Task Test1()
+    public async Task TestGetPublicIp()
     {
-        UPnPClient upnp = new UPnPClient("192.168.1.1", Protocol.Udp);
+        
         string publicIP = upnp.GetPublicIp();
         Assert.NotNull(publicIP);
+    }
+    [Test]
+    public async Task TestTryToUPnP() {
         Task tryit = upnp.TryToUPnP();
         tryit.Wait();
         Assert.Null(tryit.Exception);
     }
-
+    
 }
