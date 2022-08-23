@@ -10,6 +10,8 @@ namespace FNNP
     {
         public int ServerPort { get; set; }
         public string ServerAddress { get; set; }
+        
+        public int IPServicePort { get; set; }
     }
 
     public class Daemon
@@ -31,7 +33,8 @@ namespace FNNP
                 {
                     services.AddOptions();
                     services.Configure<FacillitatorConfig>(hostContext.Configuration.GetSection("Facillitator"));
-                    services.AddSingleton<IHostedService, FacillitatorService>();
+                    //services.AddSingleton<IHostedService, FacillitatorService>();
+                    services.AddSingleton<IHostedService, RemoteIPService>();
                 })
                 .ConfigureLogging((hostingContext, logging) => { logging.AddConsole(); });
             await builder.RunConsoleAsync();

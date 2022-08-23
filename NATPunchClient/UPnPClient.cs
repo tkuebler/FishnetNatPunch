@@ -9,9 +9,10 @@ namespace FNNP
     public class UPnPClient
     {
         private readonly string? _ipRouter;
-        private const string? DefaultRouter = "192.168.1.1"; 
-        private const string PublicIpApi = "https://api.my-ip.io/ip";
+        private const string? DefaultRouter = "192.168.1.1";
         private readonly Protocol _ipProtocol;
+
+        #region  Constructors
         public UPnPClient(string? ipRouter, Protocol ipProtocol)
         {
             _ipRouter = (ipRouter == null) ? DefaultRouter : ipRouter;
@@ -20,26 +21,9 @@ namespace FNNP
         public UPnPClient() : this(DefaultRouter, Protocol.Tcp) {}
         public UPnPClient(Protocol ipProtocol) : this(DefaultRouter, ipProtocol){}
         public UPnPClient(string? ipServer) : this(ipServer, Protocol.Tcp) {}
-        public string GetPublicIp()
-        {
-            return GetPublicIp(PublicIpApi);
-        }
-        public string GetPublicIp(string apiUrl)
-        {
-            WebClient client = new WebClient();
-            // Add a user agent header in case the
-            // requested URI contains a query.
-
-            client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-
-            Stream data = client.OpenRead(apiUrl);
-            StreamReader reader = new StreamReader(data);
-            string s = reader.ReadToEnd();
-            Console.WriteLine(s);
-            data.Close();
-            reader.Close();
-            return s;
-        }
+        #endregion
+        #region functions
+       
 
         private TaskCompletionSource<object> _completionSource = new TaskCompletionSource<object>();
 
@@ -71,7 +55,8 @@ namespace FNNP
             await _completionSource.Task; 
             NatUtility.StopDiscovery();
         }
-
+        #endregion
+        #region Util
         public async Task<Mapping> MapPort(INatDevice device, Protocol ipProtocol)
         {
             // Try to create a new port map:
@@ -136,7 +121,8 @@ namespace FNNP
                 Console.WriteLine("Couldn't delete specific mapping");
             }
         }
-        
+        #endregion
+        #region event methods
         readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
         public async void DeviceFound(object sender, DeviceEventArgs args)
         {
@@ -185,5 +171,6 @@ namespace FNNP
             }
             _completionSource.SetResult(null);
         }
+        #endregion
     }
 }

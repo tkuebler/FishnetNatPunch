@@ -221,7 +221,7 @@ namespace FNNP
         }
     }
 
-    public class FacillitatorService : IHostedService, IDisposable
+    public class FacillitatorService : BackgroundService, IDisposable
     {
         private readonly Dictionary<string, WaitPeer> _waitingPeers = new Dictionary<string, WaitPeer>();
         private static readonly TimeSpan KickTime = new TimeSpan(0, 0, 60);
@@ -241,7 +241,15 @@ namespace FNNP
             ServerPort = (config.Value.ServerPort != 0) ? config.Value.ServerPort : DefaultServerPort;
             ServerAddr = (config.Value.ServerAddress != null) ? config.Value.ServerAddress : DefaultServerAddr;
         }
-        public Task StartAsync(CancellationToken cancellationToken)
+
+        protected override Task ExecuteAsync(CancellationToken cancellationToken)
+        {
+            Task.Run(async () =>
+                await ServiceListener(cancellationToken), cancellationToken);
+            return Task.CompletedTask;
+        }
+        
+        public Task ServiceListener(CancellationToken cancellationToken)
         {
             Console.WriteLine("NatPunchFacillitator <serverPort> <serverAddress>");
             Console.WriteLine("https://github.com/tkuebler/FishnetNatPunch");
@@ -272,7 +280,7 @@ namespace FNNP
                 //IPv6Mode = IPv6Mode.DualMode,
                 NatPunchEnabled = true,
                 EnableStatistics = true
-            };
+            }; 
             _puncher.Start(ServerPort);
             
             // Create and initialize the punch listener
@@ -334,11 +342,7 @@ namespace FNNP
             return Task.CompletedTask;
         }
     
-
-    // public Task StartAsync(CancellationToken cancellationToken)
-        // {
-        //     throw new NotImplementedException();
-        // }
+        
         public Task StopAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("StopAsync");
@@ -348,7 +352,7 @@ namespace FNNP
         public void Dispose()
         {
             //throw new NotImplementedException();
-            Console.WriteLine("Dispose");
+            Console.WriteLine("Disposeof Faccilliator");
         }
     }
 }
