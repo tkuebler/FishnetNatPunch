@@ -45,6 +45,7 @@ namespace FNNP
             // TODO: support device discovery
             if (routerIp == null)
                 routerIp = DefaultRouter;
+            Console.WriteLine("");
             Task runSearch = Task.Factory.StartNew(() => 
                 {
                     NatUtility.Search(System.Net.
