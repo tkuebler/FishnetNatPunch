@@ -159,9 +159,9 @@ namespace FNNP
                 Console.WriteLine("External IP: {0}", await device.GetExternalIPAsync());
                 Console.WriteLine("Done...");
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine("unknown error..." );
+                Console.WriteLine("Error: " + e.InnerException.Message );
             }
             finally
             {
