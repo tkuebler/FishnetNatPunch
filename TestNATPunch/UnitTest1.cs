@@ -1,4 +1,5 @@
 using FNNP;
+using Microsoft.VisualStudio.TestPlatform.Common;
 using Mono.Nat;
 
 namespace TestNATPunch
@@ -12,6 +13,7 @@ namespace TestNATPunch
             var router = TestContext.Parameters.Get("DefaultRouter", UPnPClient.DefaultRouter);
             upnp = new UPnPClient(router, Protocol.Udp);
             Console.WriteLine("Setup test - DefaultRouter:"+router);
+            Console.WriteLine("Command Line passed : " + TestContext.Parameters.Get("DefaultRouter", ""));
         }
 
         [Test]

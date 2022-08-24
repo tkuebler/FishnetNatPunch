@@ -29,15 +29,15 @@ namespace FNNP
 
         public async Task TryToUPnP() // TODO: rename and support PMP
         {
-            await TryToUPnP(null,Protocol.Tcp, NatProtocol.Upnp);
+            await TryToUPnP(_ipRouter,Protocol.Tcp, NatProtocol.Upnp);
         }
         public async Task TryToUPnP(Protocol ipProtocol)
         {
-            await TryToUPnP(null, ipProtocol, NatProtocol.Upnp);
+            await TryToUPnP(_ipRouter, ipProtocol, NatProtocol.Upnp);
         }
         public async Task TryToUPnP(Protocol ipProtocol, NatProtocol natProtocol)
         {
-            await TryToUPnP(null, ipProtocol, natProtocol);
+            await TryToUPnP(_ipRouter, ipProtocol, natProtocol);
         }
         public async Task TryToUPnP(string? routerIp, Protocol ipProtocol, NatProtocol natProtocol) 
         {
@@ -45,7 +45,7 @@ namespace FNNP
             // TODO: support device discovery
             if (routerIp == null)
                 routerIp = DefaultRouter;
-            Console.WriteLine("");
+            Console.WriteLine($"DefaultRouter:{DefaultRouter}");
             Task runSearch = Task.Factory.StartNew(() => 
                 {
                     NatUtility.Search(System.Net.
