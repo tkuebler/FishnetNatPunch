@@ -19,14 +19,14 @@ namespace TestNATPunch
             string publicIP = Utilities.GetPublicIp();
             Assert.NotNull(publicIP);
             string publicIp = Utilities.GetPublicIp_Facillitator(
-                new Utilities.IPServiceDef() { addr = "192.168.1.64", port = 6080, key = "test" });
+                new Utilities.IPServiceDef() );
             Assert.IsNotEmpty(publicIp);
         }
         [Test]
         public async Task TestGetPublicIp_Facill()
         {
             string publicIp = Utilities.GetPublicIp_Facillitator(
-                new Utilities.IPServiceDef() { addr = "localhost", port = 6080, key = "test" });
+                new Utilities.IPServiceDef() { addr = "192.168.1.64", port = 6080, key = "test" });
             Assert.IsNotEmpty(publicIp);
         }
         [Test]
