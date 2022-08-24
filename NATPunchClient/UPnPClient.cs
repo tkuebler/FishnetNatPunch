@@ -161,7 +161,9 @@ namespace FNNP
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error: " + e.InnerException.Message );
+                Console.WriteLine("Error: " + e.Message );
+                Console.WriteLine(e.GetType());
+                Console.WriteLine(e.StackTrace);
             }
             finally
             {
