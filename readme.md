@@ -16,7 +16,9 @@ Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but withou
 1. <del>Done: Manually test multiple game servers and clients.</del>
 	- <del>multiple clients and session keys</del>
 	- <del>pass traffic to test punchthrough</del>
-1. (in progress) Implement UPnP with Faccilitator registry/token
+1. <del>Implement UPnP</del>
+1. <del>add multiple services to daemon ( nat puch, facillitator, my ip service)</del>
+1. (in progress) Faccilitator ICE (up to relay step)
 1. (in progress) Create a Unity project that uses this library
 1. Create Automated Tests against the punchthrough server that:
 	- Test multiple clients
@@ -28,7 +30,7 @@ Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but withou
 
 ## Getting started doing dev
 
-The repo is organized as a Solution, with multiple projects.  It should import into any C# IDE without a problem.  The LiteNetLib needs to be added as a source submodule due to differing platform compile flags (at least that is what the docs said).
+The repo is organized as a Solution, with multiple projects.  It should import into any C# IDE without a problem.  The LiteNetLib and Mono.NAT projects are added as a source submodule due to differing platform compile flags and ensuring the right version.
 
 - After you have cloned the repo you will want to do the following commands in the root of the project to pull in the LiteNetLib.
 	- ```git fetch; git submodule init; git submodule update```
@@ -49,6 +51,7 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 
 ![Example output from server](images/Facillitator-example.png)
 ![Example outut from client](images/Client-example.png)
+
 
 ## Setting up a multiple NAT network test environment using VirtualBox, Ubuntu Server and pfSense (router software).
 
