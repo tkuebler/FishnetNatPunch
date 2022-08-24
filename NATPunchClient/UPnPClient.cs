@@ -23,7 +23,6 @@ namespace FNNP
         public UPnPClient(string? ipServer) : this(ipServer, Protocol.Tcp) {}
         #endregion
         #region functions
-       
 
         private TaskCompletionSource<object> _completionSource = new TaskCompletionSource<object>();
 
@@ -43,9 +42,7 @@ namespace FNNP
         {
             NatUtility.DeviceFound += DeviceFound;
             // TODO: support device discovery
-            if (routerIp == null)
-                routerIp = DefaultRouter;
-            Console.WriteLine($"DefaultRouter:{DefaultRouter}");
+            Console.WriteLine($"Router:{_ipRouter}");
             Task runSearch = Task.Factory.StartNew(() => 
                 {
                     NatUtility.Search(System.Net.
