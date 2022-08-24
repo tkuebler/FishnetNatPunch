@@ -9,7 +9,7 @@ namespace FNNP
     public class UPnPClient
     {
         private readonly string? _ipRouter;
-        private const string? DefaultRouter = "192.168.1.1";
+        public const string? DefaultRouter = "192.168.1.1";
         private readonly Protocol _ipProtocol;
 
         #region  Constructors
