@@ -11,6 +11,7 @@ namespace TestNATPunch
         {
             var router = TestContext.Parameters.Get("DefaultRouter", UPnPClient.DefaultRouter);
             upnp = new UPnPClient(router, Protocol.Udp);
+            Console.WriteLine("Setup test - DefaultRouter:"+router);
         }
 
         [Test]
