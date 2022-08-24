@@ -152,9 +152,9 @@ namespace FNNP
 
                 Mapping[] maps = await GetPortMappings(device);
 
-                await DeletePortMapping(device, mapping);
-
-                mappingVerify = await GetPortMapping(device, mapping);
+                // await DeletePortMapping(device, mapping);
+                //
+                // mappingVerify = await GetPortMapping(device, mapping);
 
                 Console.WriteLine("External IP: {0}", await device.GetExternalIPAsync());
                 Console.WriteLine("Done...");
