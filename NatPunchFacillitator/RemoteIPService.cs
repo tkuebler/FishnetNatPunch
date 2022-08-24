@@ -30,15 +30,12 @@ public class RemoteIPService : BackgroundService, IDisposable
     }
     public Task ServiceListener(CancellationToken cancellationToken)
     {
-        Console.WriteLine("=== RemoteIPService started at " + ServerAddr + ":" + IPServicePort + " ===");
         EventBasedNetListener listener = new EventBasedNetListener();
-        NetManager ipGuy = new NetManager(listener);
+        
         listener.ConnectionRequestEvent += request =>
         {
-            if(ipGuy.ConnectedPeersCount < 10 /* max connections */)
-                request.Accept();
-            else
-                request.Reject();
+            Console.WriteLine("connection from: " + request.RemoteEndPoint);
+            request.AcceptIfKey("test");
         };
         listener.PeerConnectedEvent += peer =>
         {
@@ -46,17 +43,21 @@ public class RemoteIPService : BackgroundService, IDisposable
             NetDataWriter writer = new NetDataWriter();                 // Create writer class
             writer.Put(peer.EndPoint);                                // Put some string
             peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
-            peer.Disconnect();
         };
-        
+        NetManager ipGuy = new NetManager(listener);
         ipGuy.Start(IPServicePort);
+        
+        Console.WriteLine("=== RemoteIPService started at " + ServerAddr + ":" + IPServicePort + " ===");
         
         while (true)
         {
-            var key = Console.ReadKey(true).Key;
-            if (key == ConsoleKey.Escape)
+            if (Console.KeyAvailable)
             {
-                break;
+                var key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.Escape)
+                {
+                    break;
+                }
             }
             ipGuy.PollEvents();
             Thread.Sleep(10);

@@ -61,12 +61,6 @@ public class NATPunchClient
             peer.Send(writer, DeliveryMethod.ReliableOrdered);
         };
 
-        _clientListener.NetworkReceiveEvent += (peer, reader, channelNumber, deliveryMethod) =>
-        {
-            Console.WriteLine("We got: {0} from {1}", reader.GetString(100 /* max length of string */), peer.EndPoint.ToString());
-            reader.Recycle();
-        };
-        
         _clientListener.ConnectionRequestEvent += request =>
         {
             Console.WriteLine("connection request from {0}:{1}", request.RemoteEndPoint.Address, request.RemoteEndPoint.Port);

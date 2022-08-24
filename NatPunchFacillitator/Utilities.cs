@@ -1,6 +1,7 @@
 
 using System.Net;
 using LiteNetLib;
+using LiteNetLib.Utils;
 
 namespace FNNP
 {
@@ -13,37 +14,56 @@ namespace FNNP
         {
             public int port = 6080;
             public string addr = "localhost";
+            public string key = "key";
             public IPServiceDef()
             {
             }
         }
 
-        public string GetPublicIp()
+        public static string GetPublicIp()
         {
             return GetPublicIp_API(PublicIpApi);
         }
 
-        public string GetPublicIp_Facillitator(IPServiceDef ipService)
+        public static string GetPublicIp_Facillitator(IPServiceDef ipService)
         {
+            string publicIp = "";
+            bool connected = true;
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager client = new NetManager(listener);
             client.Start();
-            client.Connect("localhost" /* host ip or name */, 9050 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
+            
+            listener.PeerConnectedEvent += (peer) =>
+            {
+                NetDataWriter writer = new NetDataWriter();                 // Create writer class
+                writer.Put("get");                                // Put some string
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                Console.WriteLine("connected to: " + peer.EndPoint);
+            } ;
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
             {
-                Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
+                publicIp = dataReader.GetString(100 /* max length of string */);
+                Console.WriteLine($"We got: {publicIp}");
+                client.DisconnectPeer(fromPeer);
                 dataReader.Recycle();
             };
-
-            while (!Console.KeyAvailable)
+            listener.NetworkErrorEvent += (endpoint, error) =>
+            {
+                Console.WriteLine("NetError: " + endpoint + " - " + error);
+                connected = false;
+            };
+            NetPeer server = client.Connect(ipService.addr, ipService.port, ipService.key);
+            Console.WriteLine("Trying to connect to: " +server.EndPoint + " with key " + ipService.key);
+            Console.WriteLine("Server connection state is: " + server.ConnectionState);
+            while ((server.ConnectionState & ConnectionState.Disconnected) == 0)
             {
                 client.PollEvents();
                 Thread.Sleep(15);
             }
-
             client.Stop();
+            return publicIp;
         }
-        public string GetPublicIp_API(string apiUrl)
+        public static string GetPublicIp_API(string apiUrl)
         {
             WebClient client = new WebClient();
             // Add a user agent header in case the
