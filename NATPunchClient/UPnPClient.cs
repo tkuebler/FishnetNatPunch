@@ -161,7 +161,9 @@ namespace FNNP
             }
             catch (MappingException e)
             {
-                Console.WriteLine("Mapping Exception: " + e.Message );
+                Console.WriteLine(e.ErrorText);
+                Console.WriteLine("Mapping Exception - your wan interface may be BOGON: " + e.Message );
+                Console.WriteLine(e.StackTrace);
             }
             catch (Exception e)
             {
