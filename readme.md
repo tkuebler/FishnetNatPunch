@@ -42,7 +42,7 @@ The repo is organized as a Solution, with multiple projects.  It should import i
 	1. ```dotnet run NATPunchFacillitator -- <serverPort> <serverAddress>```
 	1. *or run with defaults:* ```dotnet run```
 
-- Run the client either in your idea or via command line
+- Run the client either in your IDE or via command line
 	- you must run at least two clients with the same token, one in client mode the other in game server mode, to see the punchthrough conversation happen
 	- command line 
 		- ```dotnet run NATPunchClient -- <gameToken> <server|client> <optional:serverPort> <optional:serverAddress>```
