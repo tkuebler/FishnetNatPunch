@@ -4,7 +4,7 @@ NAT punch server based on LiteNetLib for TugBoat/Fishnet use.  Example command l
 
 Clients identify as either a game host or a game client and present a token/key that identifies the game they want to join.  The Facillitator introduces them to the server for that game and visa versa and the library punches the holes for p2p.  This does not require either the game server or the game clients to be free of NAT or port forwarded.
 
-Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the TURN fallback for now.  Future plans are to [encorporate UPNP](https://github.com/lontivero/Open.NAT) and create a relay server for TURN as well and add fallback with a ICE moderator.
+Implementing: [STUN/TURN/ICE](https://anyconnect.com/stun-turn-ice/), but without the TURN fallback for now.  Future plans are to [encorporate UPNP](https://github.com/lontivero/Open.NAT) (done) and create a relay server for TURN as well and add fallback with a ICE moderator.
 
 ### Dependencies
 - [https://github.com/RevenantX/LiteNetLib](https://github.com/RevenantX/LiteNetLib)
